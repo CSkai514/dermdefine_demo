@@ -4,18 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DermDefine - Expert Medical Skincare</title>
-    
-    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-
-    <!-- SweetAlert2 for beautiful popups -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        /* Custom Styles to match the provided image */
         :root {
             --color-rose-bg: #B86B6B; /* Dusty rose from header */
             --color-gold-text: #F2D27F; /* Gold text */
@@ -42,7 +35,6 @@
             color: var(--color-gold-text);
         }
 
-        /* Smooth transitions */
         .fade-in {
             animation: fadeIn 0.3s ease-in-out;
         }
@@ -52,7 +44,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Hide scrollbar for clean UI */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -61,7 +52,6 @@
             scrollbar-width: none;
         }
 
-        /* FAQ Active State Line */
         .faq-item.active .faq-line {
             background-color: #B86B6B;
         }
@@ -69,7 +59,6 @@
 </head>
 <body>
 
-    <!-- Navigation Bar -->
     <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-rose-100 shadow-sm">
         <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-2 cursor-pointer" onclick="app.goHome()">
