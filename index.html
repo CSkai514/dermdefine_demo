@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DermDefine - Expert Medical Skincare</title>
+    
+    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <!-- SweetAlert2 for beautiful popups -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        /* Custom Styles to match the provided image */
         :root {
             --color-rose-bg: #B86B6B; /* Dusty rose from header */
             --color-gold-text: #F2D27F; /* Gold text */
@@ -35,6 +42,7 @@
             color: var(--color-gold-text);
         }
 
+        /* Smooth transitions */
         .fade-in {
             animation: fadeIn 0.3s ease-in-out;
         }
@@ -44,6 +52,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Hide scrollbar for clean UI */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -52,6 +61,7 @@
             scrollbar-width: none;
         }
 
+        /* FAQ Active State Line */
         .faq-item.active .faq-line {
             background-color: #B86B6B;
         }
@@ -59,6 +69,7 @@
 </head>
 <body>
 
+    <!-- Navigation Bar -->
     <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-rose-100 shadow-sm">
         <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-2 cursor-pointer" onclick="app.goHome()">
@@ -67,9 +78,9 @@
             </div>
 
             <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-[#8A4A4A]">
-                <button onclick="app.goHome()" class="hover:text-rose-500 transition-colors">Home</button>
-                <button onclick="app.goHome(); setTimeout(() => document.getElementById('all-products').scrollIntoView({behavior: 'smooth'}), 100);" class="hover:text-rose-500 transition-colors">Our Products</button>
-                <button onclick="app.goAbout()" class="hover:text-rose-500 transition-colors">About us</button>
+                <button onclick="app.goHome()" class="hover:text-rose-500 transition-colors">HOME</button>
+                <button onclick="app.goHome(); setTimeout(() => document.getElementById('all-products').scrollIntoView({behavior: 'smooth'}), 100);" class="hover:text-rose-500 transition-colors">SHOP</button>
+                <button onclick="app.goAbout()" class="hover:text-rose-500 transition-colors">ABOUT</button>
             </div>
 
             <div class="flex items-center space-x-4">
@@ -146,6 +157,8 @@
                 images: ["assets/images/products/sku_product/website-Luxemilk-copy.jpg", "assets/images/products/luxemilk_cleanser/dd-niacinamide-website-copy.jpg","assets/images/products/luxemilk_cleanser/website-luxemilk-poster.jpg" ],
                 desc: "A gentle cleansing milk that removes grease, makeup, and excess sebum while soothing and moisturizing without stripping natural oils—suitable for all skin types, including sensitive skin.",
                 suitable: ["Dry skin", "Sensitive skin", "Oily skin"],
+                notRecommended: [],
+                howToUse: "Squirt a small amount of cleansing milk into the palm of your hand. Mix with an adequate amount of water and massage onto the face and neck. Rinse with water.",
                 ingredients: "Aqua, Cocamidopropyl Betaine, Butylene Glycol, Glycerin, C12-15 Alkyl Benzoate, Isopropyl Palmitate, Niacinamide, Ectoin, Sodium Hyaluronate.",
                 size: "120ml",
                 isRecommended: true,
@@ -163,6 +176,8 @@
                 images: ["assets/images/products/sku_product/website-dermclear-copy.jpg", "assets/images/products/sku_product/website-dermclear-copy.jpg"],
                 desc: "A gentle cleanser that purifies deeply without stripping moisture. It soothes sensitive skin, protects against daily environmental stressors, and is enriched with niacinamide to help maintain balance. Skin is left clean, soft, and comfortably refreshed.",
                 suitable: ["Dry skin", "Sensitive skin", "Oily skin", "Normal skin"],
+                notRecommended: [],
+                howToUse: "Wet face with water. Apply a small amount to the palm, lather, and massage onto the face and neck. Rinse thoroughly.",
                 ingredients: "Salicylic Acid, Tea Tree Oil, Centella Asiatica, Niacinamide.",
                 size: "120ml",
                 isRecommended: true,
@@ -180,6 +195,8 @@
                 images: ["assets/images/products/sku_product/essencemist_1.png"],
                 desc: "Instant hydration and soothing mist that refreshes your face throughout the day.",
                 suitable: ["All skin types", "Normal skin", "Oily skin", "Dry skin"],
+                notRecommended: [],
+                howToUse: "Spray evenly over the face from a distance of 15-20cm. Can be used after cleansing or throughout the day for instant hydration.",
                 ingredients: "Rose Water, Glycerin, Vitamin B5.",
                 size: "100ml",
                 isRecommended: true,
@@ -197,6 +214,8 @@
                 images: ["assets/images/products/sku_product/website-Exfowhite-copy.jpg"],
                 desc: "Brightening exfoliator for radiant skin. Removes dead skin cells to reveal a brighter, smoother complexion.",
                 suitable: ["Dull skin", "Uneven skin tone", "Normal Skin"],
+                notRecommended: ["Oily Skin"],
+                howToUse: "Apply a thin layer to cleansed face, avoiding the eye area. Leave on for 5-10 minutes, then rinse thoroughly. Use 1-2 times a week.",
                 ingredients: "AHA, BHA, Vitamin C.",
                 size: "50ml",
                 isRecommended: true,
@@ -214,6 +233,8 @@
                 images: ["assets/images/products/sku_product/website-Uvee-SPF35.jpg"],
                 desc: "Lightweight daily sun protector with SPF 35 that shields from UVA/UVB rays, hydrates, and enhances natural glow with a soft pink tint.",
                 suitable: ["All skin types", "Normal skin", "Oily skin", "Dry skin"],
+                notRecommended: [],
+                howToUse: "Apply generously and evenly to the cleansed face and neck as the final step in your morning skincare routine.",
                 ingredients: "Purified Water, Titanium Dioxide, Cyclopentasiloxane, C12-15 Alkyl Benzoate, Butylene Glycol, Glycerin, Octocrylene, Ethylhexyl Methoxycinnamate.",
                 size: "35ml",
                 isRecommended: false,
@@ -231,6 +252,8 @@
                 images: ["assets/images/products/sku_product/hydradefine_1.png"],
                 desc: "Deep hydration formula designed to lock in moisture and repair the skin barrier. Leaves skin feeling supple and nourished.",
                 suitable: ["Normal skin", "Dry skin"],
+                notRecommended: [],
+                howToUse: "Apply a suitable amount onto the face and neck after cleansing and toning. Gently massage until fully absorbed.",
                 ingredients: "Ceramide EOP, Ceramide NG, Ceramide NP, Sodium Hyaluronate, Glycerine, D-Panthenol.",
                 size: "50ml",
                 isRecommended: false,
@@ -248,6 +271,8 @@
                 images: ["assets/images/products/sku_product/website-Aqua Mask-copy.jpg"],
                 desc: "A deeply hydrating mask that revitalizes and plumps the skin, giving you a spa-like treatment at home.",
                 suitable: ["Normal skin", "Oily skin"],
+                notRecommended: [],
+                howToUse: "After cleansing, apply the mask over the face. Leave on for 15-20 minutes, remove, and gently pat any remaining essence into the skin.",
                 ingredients: "Centella Asiatica Extract, Rosemary Leaf Extract, Licorice Extract, Green Tea Extract.",
                 size: "5 Sheets",
                 isRecommended: false,
@@ -264,9 +289,11 @@
                 rating: 5,
                 reviews: 4,
                 color: "from-orange-100 to-red-200",
-                images: ["assets/images/products/sku_product/website-dermclear-copy.jpg", "assets/images/products/sku_product/website-dermclear-copy.jpg"],
+                images: ["assets/images/products/sku_product/dermclear_trial.png", "assets/images/products/sku_product/website-dermclear-copy.jpg"],
                 desc: "Trial size. A gentle cleanser that purifies deeply without stripping moisture. Perfect for testing on your skin.",
                 suitable: ["Dry skin", "Sensitive skin", "Oily skin", "Normal skin"],
+                notRecommended: [],
+                howToUse: "Wet face with water. Apply a small amount to the palm, lather, and massage onto the face and neck. Rinse thoroughly.",
                 ingredients: "Salicylic Acid, Tea Tree Oil, Centella Asiatica, Niacinamide.",
                 size: "5ml",
                 isRecommended: false,
@@ -284,6 +311,8 @@
                 images: ["assets/images/products/sku_product/essencemist_trial.png", "assets/images/products/sku_product/essencemist_1.png"],
                 desc: "Trial size. Instant hydration and soothing mist that refreshes your face throughout the day.",
                 suitable: ["All skin types", "Normal skin", "Oily skin", "Dry skin"],
+                notRecommended: [],
+                howToUse: "Spray evenly over the face from a distance of 15-20cm. Can be used after cleansing or throughout the day for instant hydration.",
                 ingredients: "Rose Water, Glycerin, Vitamin B5.",
                 size: "10ml",
                 isRecommended: false,
@@ -301,6 +330,8 @@
                 images: ["assets/images/products/sku_product/hydradefine_trial.png", "assets/images/products/sku_product/hydradefine_1.png"],
                 desc: "Trial size. Deep hydration formula designed to lock in moisture and repair the skin barrier.",
                 suitable: ["Normal skin", "Dry skin"],
+                notRecommended: [],
+                howToUse: "Apply a suitable amount onto the face and neck after cleansing and toning. Gently massage until fully absorbed.",
                 ingredients: "Ceramide EOP, Ceramide NG, Ceramide NP, Sodium Hyaluronate, Glycerine, D-Panthenol.",
                 size: "5ml",
                 isRecommended: false,
@@ -318,6 +349,8 @@
                 images: ["assets/images/products/sku_product/website-Uvee-SPF35.jpg", "assets/images/products/sku_product/website-Uvee-SPF35.jpg"],
                 desc: "Trial size. Lightweight daily sun protector with SPF 35 that shields from UVA/UVB rays and hydrates.",
                 suitable: ["All skin types", "Normal skin", "Oily skin", "Dry skin"],
+                notRecommended: [],
+                howToUse: "Apply generously and evenly to the cleansed face and neck as the final step in your morning skincare routine.",
                 ingredients: "Purified Water, Titanium Dioxide, Cyclopentasiloxane, C12-15 Alkyl Benzoate.",
                 size: "5ml",
                 isRecommended: false,
@@ -985,9 +1018,33 @@
                                             </div>
                                         </div>
 
+                                        ${p.notRecommended && p.notRecommended.length > 0 ? `
+                                        <div class="mb-4">
+                                            <h4 class="font-bold text-[#5C3A3A] mb-2 text-sm uppercase">Not Recommended For:</h4>
+                                            <div class="flex flex-wrap gap-2">
+                                                ${p.notRecommended.map(s => `<span class="bg-gray-100 text-gray-500 text-xs px-3 py-1 rounded-full font-medium line-through">${s}</span>`).join('')}
+                                            </div>
+                                        </div>
+                                        ` : ''}
+
                                         <div>
                                             <h4 class="font-bold text-[#5C3A3A] mb-2 text-sm uppercase">Ingredients:</h4>
                                             <p class="text-sm text-[#8A4A4A]/80">${p.ingredients}</p>
+                                        </div>
+
+                                        <!-- Expandable How To Use Section -->
+                                        <div class="border-t border-rose-200 mt-6 pt-4">
+                                            <details class="group">
+                                                <summary class="flex justify-between items-center font-bold cursor-pointer list-none text-[#5C3A3A] text-sm uppercase transition-colors hover:text-rose-500">
+                                                    <span>How To Use</span>
+                                                    <span class="transition group-open:rotate-180">
+                                                        <svg fill="none" height="20" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="20"><path d="M6 9l6 6 6-6"></path></svg>
+                                                    </span>
+                                                </summary>
+                                                <p class="text-sm text-[#8A4A4A]/80 mt-3 leading-relaxed">
+                                                    ${p.howToUse}
+                                                </p>
+                                            </details>
                                         </div>
                                     </div>
 
