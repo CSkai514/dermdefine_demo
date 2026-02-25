@@ -72,9 +72,15 @@
     <!-- Navigation Bar -->
     <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-rose-100 shadow-sm">
         <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center space-x-2 cursor-pointer" onclick="app.goHome()">
-                <div class="w-8 h-8 bg-[#B86B6B] rounded-full flex items-center justify-center text-white font-serif font-bold">D</div>
-                <span class="text-xl font-bold tracking-tight text-[#8A4A4A]">DERMDEFINE</span>
+            <div class="flex items-center cursor-pointer" onclick="app.goHome()">
+                <!-- Brandmark Logo (Responsive: h-10 on mobile, h-12 on tablet/desktop) -->
+                <img src="assets/images/brandmark.png" alt="DermDefine Logo" class="h-10 md:h-12 w-auto object-contain transition-transform duration-300 hover:scale-105" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                
+                <!-- Fallback Logo (Only shows if the image fails to load) -->
+                <div style="display: none;" class="items-center space-x-2">
+                    <div class="w-8 h-8 md:w-10 md:h-10 bg-[#B86B6B] rounded-full flex items-center justify-center text-white font-serif font-bold text-lg md:text-xl">D</div>
+                    <span class="text-lg md:text-xl font-bold tracking-tight text-[#8A4A4A]">DERMDEFINE</span>
+                </div>
             </div>
 
             <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-[#8A4A4A]">
@@ -199,7 +205,7 @@
                 rating: 5,
                 reviews: 15,
                 color: "from-orange-100 to-red-200",
-                images: ["assets/images/products/sku_product/essencemist_1.png"],
+                images: ["assets/images/products/sku_product/Essence_Mist_copy.jpg"],
                 desc: "Instant hydration and soothing mist that refreshes your face throughout the day.",
                 suitable: ["All skin types", "Normal skin", "Oily skin", "Dry skin"],
                 notRecommended: [],
@@ -256,7 +262,7 @@
                 rating: 5,
                 reviews: 18,
                 color: "from-rose-100 to-pink-200",
-                images: ["assets/images/products/sku_product/hydradefine_1.png"],
+                images: ["assets/images/products/sku_product/website-Hyradefine-copy.jpg"],
                 desc: "Deep hydration formula designed to lock in moisture and repair the skin barrier. Leaves skin feeling supple and nourished.",
                 suitable: ["Normal skin", "Dry skin"],
                 notRecommended: [],
@@ -315,7 +321,7 @@
                 rating: 5,
                 reviews: 7,
                 color: "from-orange-100 to-red-200",
-                images: ["assets/images/products/sku_product/essencemist_trial.png", "assets/images/products/sku_product/essencemist_1.png"],
+                images: ["assets/images/products/sku_product/Essence_Mist_copy.jpg", "assets/images/products/sku_product/Essence_Mist_copy.jpg"],
                 desc: "Trial size. Instant hydration and soothing mist that refreshes your face throughout the day.",
                 suitable: ["All skin types", "Normal skin", "Oily skin", "Dry skin"],
                 notRecommended: [],
@@ -334,7 +340,7 @@
                 rating: 5,
                 reviews: 9,
                 color: "from-rose-100 to-pink-200",
-                images: ["assets/images/products/sku_product/hydradefine_trial.png", "assets/images/products/sku_product/hydradefine_1.png"],
+                images: ["assets/images/products/sku_product/website-Hyradefine-copy.jpg", "assets/images/products/sku_product/website-Hyradefine-copy.jpg"],
                 desc: "Trial size. Deep hydration formula designed to lock in moisture and repair the skin barrier.",
                 suitable: ["Normal skin", "Dry skin"],
                 notRecommended: [],
@@ -728,8 +734,8 @@
                 // 3. Show Success Alert
                 Swal.fire({ 
                     title: 'Thank You!', 
-                    text: 'Your review data has not been collected, functions still in progress', 
-                    icon: 'info', 
+                    text: 'Your review data has been collected (check console for JSON) and is ready for future database integration.', 
+                    icon: 'success', 
                     confirmButtonColor: '#B86B6B' 
                 });
 
