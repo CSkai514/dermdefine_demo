@@ -760,8 +760,8 @@
                 // 3. Show Success Alert
                 Swal.fire({ 
                     title: 'Thank You!', 
-                    text: 'Your review data has been collected (check console for JSON) and is ready for future database integration.', 
-                    icon: 'success', 
+                    text: 'Your review data Not collected, Function coming soon.', 
+                    icon: 'info', 
                     confirmButtonColor: '#B86B6B' 
                 });
 
@@ -797,8 +797,6 @@
                 });
             },
 
-            // Helper to generate product cards HTML
-            // Note: Added customClass parameter to allow for slider styles vs grid styles
             generateProductCardsHtml(productList, customClass = '') {
                 return productList.map(product => `
                     <div onclick="app.goToProduct(${product.id})" class="group cursor-pointer ${customClass}">
