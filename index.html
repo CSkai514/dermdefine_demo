@@ -137,6 +137,14 @@
         <span id="floating-cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full border-2 border-white">0</span>
     </button>
 
+    <!-- FULL SCREEN IMAGE MODAL -->
+    <div id="image-modal" class="fixed inset-0 bg-black/95 z-[150] hidden flex items-center justify-center transition-opacity duration-300 opacity-0" onclick="if(event.target === this) app.closeImageModal()">
+        <button onclick="app.closeImageModal()" class="absolute top-6 right-6 text-white hover:text-rose-400 transition-colors z-[160] p-2 bg-black/50 hover:bg-black/80 rounded-full">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <img id="image-modal-content" src="" alt="Full Screen Preview" class="max-w-[95vw] max-h-[95vh] object-contain transform scale-95 transition-transform duration-300 shadow-2xl rounded-lg">
+    </div>
+
     <!-- Footer -->
     <footer class="bg-[#5C3A3A] text-white/70 py-8 px-6 text-center text-xs mt-auto">
         <div class="max-w-6xl mx-auto flex flex-col items-center gap-3">
@@ -155,7 +163,16 @@
         
         const WHATSAPP_NUMBER = "60128769366"; // Updated Business Number
 
-        // Data array updated with real Excel Data & Trial Packs
+        // Hero Slider Posters (Updated with 5 Hero Ingredient Images)
+        const heroPosters = [
+            "assets/images/products/hero_ingredients/Artboard-1-copy-2.png", 
+            "assets/images/products/hero_ingredients/Artboard-1-copy-3.png", 
+            "assets/images/products/hero_ingredients/Artboard-1-copy-4.png", 
+            "assets/images/products/hero_ingredients/Artboard-1-copy.png", 
+            "assets/images/products/hero_ingredients/dd-niacinamide-website-copy.jpg"  
+        ];
+
+        // Data array updated with real Excel Data including Trial Packs
         const products = [
             // --- Standard Products ---
             {
@@ -291,80 +308,61 @@
                 isRecommended: false,
                 isTrial: false
             },
-
-            // --- Trial Packs ---
+            
+            // --- TRIAL PACK PRODUCTS RESTORED ---
             {
                 id: 8,
-                name: "DermClear (Trial Pack)",
-                type: "Gel Cleanser",
-                highlight: "Deep Clean Trial",
-                price: 35, 
+                name: "Luxemilk Cleanser (Trial)",
+                type: "Milk Cleanser",
+                highlight: "Gentle Daily Cleanser",
+                price: 38,
                 rating: 5,
-                reviews: 4,
+                reviews: 5,
                 color: "from-orange-100 to-red-200",
-                images: ["assets/images/products/sku_product/website-dermclear-copy.jpg", "assets/images/products/sku_product/website-dermclear-copy.jpg"],
-                desc: "Trial size. A gentle cleanser that purifies deeply without stripping moisture. Perfect for testing on your skin.",
-                suitable: ["Dry skin", "Sensitive skin", "Oily skin", "Normal skin"],
+                images: ["assets/images/products/sku_product/website-Luxemilk-copy.jpg"],
+                desc: "Trial size of our gentle cleansing milk that removes grease, makeup, and excess sebum.",
+                suitable: ["Dry skin", "Sensitive skin", "Oily skin"],
                 notRecommended: [],
-                howToUse: "Wet face with water. Apply a small amount to the palm, lather, and massage onto the face and neck. Rinse thoroughly.",
-                ingredients: "Salicylic Acid, Tea Tree Oil, Centella Asiatica, Niacinamide.",
-                size: "5ml",
+                howToUse: "Squirt a small amount of cleansing milk into the palm of your hand. Mix with water and massage onto face. Rinse.",
+                ingredients: "Aqua, Cocamidopropyl Betaine, Butylene Glycol, Glycerin, C12-15 Alkyl Benzoate, Niacinamide...",
+                size: "30ml",
                 isRecommended: false,
                 isTrial: true
             },
             {
                 id: 9,
-                name: "Essence Mist (Trial Pack)",
-                type: "Hydration",
-                highlight: "Hydration Trial",
-                price: 45,
+                name: "DermClear (Trial)",
+                type: "Gel Cleanser",
+                highlight: "Deep Clean, Fresh Skin",
+                price: 38,
                 rating: 5,
-                reviews: 7,
+                reviews: 4,
                 color: "from-orange-100 to-red-200",
-                images: ["assets/images/products/sku_product/Essence_Mist_copy.jpg", "assets/images/products/sku_product/Essence_Mist_copy.jpg"],
-                desc: "Trial size. Instant hydration and soothing mist that refreshes your face throughout the day.",
-                suitable: ["All skin types", "Normal skin", "Oily skin", "Dry skin"],
+                images: ["assets/images/products/sku_product/website-dermclear-copy.jpg"],
+                desc: "Trial size gentle cleanser that purifies deeply without stripping moisture.",
+                suitable: ["Dry skin", "Sensitive skin", "Oily skin", "Normal skin"],
                 notRecommended: [],
-                howToUse: "Spray evenly over the face from a distance of 15-20cm. Can be used after cleansing or throughout the day for instant hydration.",
-                ingredients: "Rose Water, Glycerin, Vitamin B5.",
-                size: "10ml",
+                howToUse: "Wet face with water. Apply a small amount to the palm, lather, and massage. Rinse thoroughly.",
+                ingredients: "Salicylic Acid, Tea Tree Oil, Centella Asiatica, Niacinamide.",
+                size: "30ml",
                 isRecommended: false,
                 isTrial: true
             },
             {
                 id: 10,
-                name: "HydraDefine (Trial Pack)",
-                type: "Moisturizer",
-                highlight: "Moisture Lock Trial",
-                price: 48,
-                rating: 5,
-                reviews: 9,
-                color: "from-rose-100 to-pink-200",
-                images: ["assets/images/products/sku_product/website-Hyradefine-copy.jpg", "assets/images/products/sku_product/website-Hyradefine-copy.jpg"],
-                desc: "Trial size. Deep hydration formula designed to lock in moisture and repair the skin barrier.",
-                suitable: ["Normal skin", "Dry skin"],
-                notRecommended: [],
-                howToUse: "Apply a suitable amount onto the face and neck after cleansing and toning. Gently massage until fully absorbed.",
-                ingredients: "Ceramide EOP, Ceramide NG, Ceramide NP, Sodium Hyaluronate, Glycerine, D-Panthenol.",
-                size: "5ml",
-                isRecommended: false,
-                isTrial: true
-            },
-            {
-                id: 11,
-                name: "Uvee SPF 35 (Trial Pack)",
+                name: "Uvee SPF 35 (Trial)",
                 type: "Sunblock",
-                highlight: "Defense Trial",
-                price: 32, 
+                highlight: "Daily Multi-Defense",
+                price: 38, 
                 rating: 5,
-                reviews: 14,
+                reviews: 12,
                 color: "from-yellow-100 to-orange-200",
-                images: ["assets/images/products/sku_product/website-Uvee-SPF35.jpg", "assets/images/products/sku_product/website-Uvee-SPF35.jpg"],
-                desc: "Trial size. Lightweight daily sun protector with SPF 35 that shields from UVA/UVB rays and hydrates.",
+                images: ["assets/images/products/sku_product/website-Uvee-SPF35.jpg"],
+                desc: "Trial size lightweight daily sun protector with SPF 35 that shields from UVA/UVB rays.",
                 suitable: ["All skin types", "Normal skin", "Oily skin", "Dry skin"],
                 notRecommended: [],
                 howToUse: "Apply generously and evenly to the cleansed face and neck as the final step in your morning skincare routine.",
-                ingredients: "Purified Water, Titanium Dioxide, Cyclopentasiloxane, C12-15 Alkyl Benzoate.",
+                ingredients: "Purified Water, Titanium Dioxide, Cyclopentasiloxane, C12-15 Alkyl Benzoate...",
                 size: "5ml",
                 isRecommended: false,
                 isTrial: true
@@ -462,6 +460,36 @@
             toggleFaq(index) {
                 this.state.activeFaq = this.state.activeFaq === index ? -1 : index;
                 this.renderFaqSection();
+            },
+
+            // --- IMAGE MODAL LOGIC ---
+            openImageModal(src) {
+                const modal = document.getElementById('image-modal');
+                const modalImg = document.getElementById('image-modal-content');
+                modalImg.src = src;
+                modal.classList.remove('hidden');
+                
+                // Small delay to allow display:block to apply before animating opacity
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modalImg.classList.remove('scale-95');
+                    modalImg.classList.add('scale-100');
+                }, 10);
+            },
+
+            closeImageModal() {
+                const modal = document.getElementById('image-modal');
+                const modalImg = document.getElementById('image-modal-content');
+                
+                modal.classList.add('opacity-0');
+                modalImg.classList.remove('scale-100');
+                modalImg.classList.add('scale-95');
+                
+                // Wait for animation to finish before hiding
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modalImg.src = '';
+                }, 300);
             },
 
             // --- CART & WHATSAPP LOGIC ---
@@ -623,9 +651,7 @@
             renderFilteredProducts() {
                 let filtered = [...products];
 
-                if (this.state.filterCategory === 'trial') {
-                    filtered = filtered.filter(p => p.isTrial);
-                } else if (this.state.filterCategory !== 'all') {
+                if (this.state.filterCategory !== 'all') {
                     filtered = filtered.filter(p => p.suitable.some(s => s.toLowerCase().includes(this.state.filterCategory)));
                 }
 
@@ -772,9 +798,10 @@
             },
 
             // Helper to generate product cards HTML
-            generateProductCardsHtml(productList) {
+            // Note: Added customClass parameter to allow for slider styles vs grid styles
+            generateProductCardsHtml(productList, customClass = '') {
                 return productList.map(product => `
-                    <div onclick="app.goToProduct(${product.id})" class="group cursor-pointer">
+                    <div onclick="app.goToProduct(${product.id})" class="group cursor-pointer ${customClass}">
                         <div class="bg-gradient-to-b ${product.color} h-64 rounded-xl flex items-center justify-center relative overflow-hidden mb-4 shadow-sm group-hover:shadow-md transition-all">
                             <!-- Try to load real image, fallback to CSS bottle if missing -->
                             <img src="${product.images[0]}" class="w-full h-full object-contain p-4 relative z-20 group-hover:scale-105 transition-transform duration-500 drop-shadow-lg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -828,7 +855,6 @@
             renderHome() {
                 const container = document.getElementById('app-container');
                 const recommendedProducts = products.filter(p => p.isRecommended);
-                const trialProducts = products.filter(p => p.isTrial);
 
                 container.innerHTML = `
                     <!-- HEADER SECTION -->
@@ -847,7 +873,7 @@
                     </section>
 
                     <!-- FAQ SECTION -->
-                    <section class="bg-[#F5F0EB] pb-16 pt-8">
+                    <section class="bg-[#F5F0EB] pb-16 pt-12">
                         <div class="max-w-6xl mx-auto px-6">
                             <div class="grid md:grid-cols-3 gap-8" id="faq-container"></div>
                         </div>
@@ -863,15 +889,40 @@
                         </div>
                     </section>
 
-                    <!-- TRIAL PACKS GRID -->
-                    <section class="py-16 px-4 bg-[#F5F0EB]">
-                        <div class="max-w-5xl mx-auto">
+                    <!-- HERO INGREDIENTS SLIDER -->
+                    <section class="py-16 px-4 bg-[#F5F0EB] relative">
+                        <div class="max-w-6xl mx-auto">
                             <div class="text-center mb-10">
-                                <h2 class="text-2xl font-serif text-[#8A4A4A] mb-2 uppercase tracking-widest">Trial Packs</h2>
-                                <p class="text-rose-400 text-sm font-medium uppercase tracking-wider">Perfect for testing on your skin</p>
+                                <h2 class="text-2xl font-serif text-[#8A4A4A] mb-2 uppercase tracking-widest">HERO ingredients</h2>
                             </div>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 gap-y-10">
-                                ${this.generateProductCardsHtml(trialProducts)}
+                            
+                            <!-- Slider Container -->
+                            <div class="relative group/slider">
+                                <!-- Navigation Arrows -->
+                                <button onclick="document.getElementById('hero-ingredients-slider').scrollBy({left: -500, behavior: 'smooth'})" class="hidden md:flex absolute -left-6 top-[45%] -translate-y-1/2 z-40 bg-white/90 backdrop-blur hover:bg-white text-[#8A4A4A] hover:text-rose-500 shadow-xl rounded-full w-12 h-12 items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-all duration-300 border border-rose-100">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                                </button>
+
+                                <!-- Slider Track -->
+                                <div id="hero-ingredients-slider" class="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-8 pt-4 px-4 md:px-2 -mx-4 md:mx-0 scroll-smooth">
+                                    ${heroPosters.map((poster, index) => `
+                                        <div onclick="app.openImageModal('${poster}')" class="w-[80vw] sm:w-[400px] md:w-[480px] lg:w-[520px] flex-shrink-0 snap-center relative flex justify-center bg-white rounded-2xl md:rounded-3xl shadow-sm hover:shadow-md overflow-hidden border border-rose-50 transition-all duration-300 cursor-pointer group">
+                                            <!-- Image container for posters with padding and object-contain to prevent cropping -->
+                                            <img src="${poster}" onerror="this.src='https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?q=80&w=600&auto=format&fit=crop'" alt="Hero Ingredient Poster ${index + 1}" class="w-full h-auto aspect-square object-contain p-4 md:p-6 block transition-transform duration-700 group-hover:scale-105">
+                                            
+                                            <!-- Overlay hint to click -->
+                                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 flex items-center justify-center pointer-events-none">
+                                                <div class="bg-white/90 text-[#8A4A4A] p-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-lg transform scale-90 group-hover:scale-100">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+
+                                <button onclick="document.getElementById('hero-ingredients-slider').scrollBy({left: 500, behavior: 'smooth'})" class="hidden md:flex absolute -right-6 top-[45%] -translate-y-1/2 z-40 bg-white/90 backdrop-blur hover:bg-white text-[#8A4A4A] hover:text-rose-500 shadow-xl rounded-full w-12 h-12 items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-all duration-300 border border-rose-100">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                                </button>
                             </div>
                         </div>
                     </section>
@@ -922,8 +973,7 @@
                                             <div onclick="app.setFilter('all', 'All Items')" class="px-4 py-3 text-sm text-[#8A4A4A] hover:bg-rose-50 hover:text-rose-600 cursor-pointer transition-colors border-b border-rose-50">All Items</div>
                                             <div onclick="app.setFilter('normal', 'Normal Skin')" class="px-4 py-3 text-sm text-[#8A4A4A] hover:bg-rose-50 hover:text-rose-600 cursor-pointer transition-colors border-b border-rose-50">Normal Skin</div>
                                             <div onclick="app.setFilter('oily', 'Oily Skin')" class="px-4 py-3 text-sm text-[#8A4A4A] hover:bg-rose-50 hover:text-rose-600 cursor-pointer transition-colors border-b border-rose-50">Oily Skin</div>
-                                            <div onclick="app.setFilter('dry', 'Dry Skin')" class="px-4 py-3 text-sm text-[#8A4A4A] hover:bg-rose-50 hover:text-rose-600 cursor-pointer transition-colors border-b border-rose-50">Dry Skin</div>
-                                            <div onclick="app.setFilter('trial', 'Trial Packs Only')" class="px-4 py-3 text-sm text-[#8A4A4A] hover:bg-rose-50 hover:text-rose-600 cursor-pointer transition-colors">Trial Packs Only</div>
+                                            <div onclick="app.setFilter('dry', 'Dry Skin')" class="px-4 py-3 text-sm text-[#8A4A4A] hover:bg-rose-50 hover:text-rose-600 cursor-pointer transition-colors">Dry Skin</div>
                                         </div>
                                     </div>
                                 </div>
@@ -1047,7 +1097,7 @@
                 const sortLabel = document.getElementById('sort-label');
                 if(filterLabel && this.state.filterCategory !== 'all') {
                     // Match to label text logic (simplification)
-                    filterLabel.innerText = this.state.filterCategory.charAt(0).toUpperCase() + this.state.filterCategory.slice(1) + (this.state.filterCategory === 'trial' ? ' Packs' : ' Skin');
+                    filterLabel.innerText = this.state.filterCategory.charAt(0).toUpperCase() + this.state.filterCategory.slice(1) + ' Skin';
                 }
             },
 
