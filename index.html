@@ -78,9 +78,9 @@
             </div>
 
             <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-[#8A4A4A]">
-                <button onclick="app.goHome()" class="hover:text-rose-500 transition-colors">HOME</button>
-                <button onclick="app.goHome(); setTimeout(() => document.getElementById('all-products').scrollIntoView({behavior: 'smooth'}), 100);" class="hover:text-rose-500 transition-colors">SHOP</button>
-                <button onclick="app.goAbout()" class="hover:text-rose-500 transition-colors">ABOUT</button>
+                <button onclick="app.goHome()" class="hover:text-rose-500 transition-colors">Home</button>
+                <button onclick="app.goHome(); setTimeout(() => document.getElementById('all-products').scrollIntoView({behavior: 'smooth'}), 100);" class="hover:text-rose-500 transition-colors">Our Products</button>
+                <button onclick="app.goAbout()" class="hover:text-rose-500 transition-colors">About us</button>
             </div>
 
             <div class="flex items-center space-x-4">
@@ -140,7 +140,7 @@
     <script>
         // --- CONFIGURATION & DATA ---
         
-        const WHATSAPP_NUMBER = "60128769366"; // Replace with your actual business number
+        const WHATSAPP_NUMBER = "60128769366"; // Updated Business Number
 
         // Data array updated with real Excel Data & Trial Packs
         const products = [
@@ -192,7 +192,7 @@
                 rating: 5,
                 reviews: 15,
                 color: "from-orange-100 to-red-200",
-                images: ["assets/images/products/sku_product/Essence_Mist_copy.jpg"],
+                images: ["assets/images/products/sku_product/essencemist_1.png"],
                 desc: "Instant hydration and soothing mist that refreshes your face throughout the day.",
                 suitable: ["All skin types", "Normal skin", "Oily skin", "Dry skin"],
                 notRecommended: [],
@@ -249,7 +249,7 @@
                 rating: 5,
                 reviews: 18,
                 color: "from-rose-100 to-pink-200",
-                images: ["assets/images/products/sku_product/website-Hyradefine-copy.jpg"],
+                images: ["assets/images/products/sku_product/hydradefine_1.png"],
                 desc: "Deep hydration formula designed to lock in moisture and repair the skin barrier. Leaves skin feeling supple and nourished.",
                 suitable: ["Normal skin", "Dry skin"],
                 notRecommended: [],
@@ -308,7 +308,7 @@
                 rating: 5,
                 reviews: 7,
                 color: "from-orange-100 to-red-200",
-                images: ["assets/images/products/sku_product/Essence_Mist_copy.jpg", "assets/images/products/sku_product/Essence_Mist_copy.jpg"],
+                images: ["assets/images/products/sku_product/essencemist_trial.png", "assets/images/products/sku_product/essencemist_1.png"],
                 desc: "Trial size. Instant hydration and soothing mist that refreshes your face throughout the day.",
                 suitable: ["All skin types", "Normal skin", "Oily skin", "Dry skin"],
                 notRecommended: [],
@@ -327,7 +327,7 @@
                 rating: 5,
                 reviews: 9,
                 color: "from-rose-100 to-pink-200",
-                images: ["assets/images/products/sku_product/website-Hyradefine-copy.jpg", "assets/images/products/sku_product/website-Hyradefine-copy.jpg"],
+                images: ["assets/images/products/sku_product/hydradefine_trial.png", "assets/images/products/sku_product/hydradefine_1.png"],
                 desc: "Trial size. Deep hydration formula designed to lock in moisture and repair the skin barrier.",
                 suitable: ["Normal skin", "Dry skin"],
                 notRecommended: [],
@@ -386,20 +386,43 @@
                 filterCategory: 'all', // Filter state
                 sortBy: 'default',      // Sort state
                 cart: [],              // Shopping Cart Items
-                isCartOpen: false      // Cart Modal State
+                isCartOpen: false,     // Cart Modal State
+                // --- Review State Variables ---
+                reviewRating: 0,       // Current selected rating
+                reviewProducts: [],    // Array of selected product IDs to review
+                // --- Custom Dropdown States ---
+                isFilterOpen: false,
+                isSortOpen: false,
             },
 
             init() {
                 this.renderHome();
                 this.updateCartUI();
+
+                // Click Outside Listener to close custom dropdowns
+                document.addEventListener('click', (e) => {
+                    if (this.state.view === 'home') {
+                        const filterContainer = document.getElementById('filter-dropdown-container');
+                        const sortContainer = document.getElementById('sort-dropdown-container');
+                        
+                        if (filterContainer && !filterContainer.contains(e.target) && this.state.isFilterOpen) {
+                            this.toggleDropdown('filter', false);
+                        }
+                        if (sortContainer && !sortContainer.contains(e.target) && this.state.isSortOpen) {
+                            this.toggleDropdown('sort', false);
+                        }
+                    }
+                });
             },
 
             goHome() {
                 this.state.view = 'home';
                 this.state.selectedProduct = null;
                 this.state.selectedImageIndex = 0;
-                this.state.filterCategory = 'all'; // Reset filter on home
-                this.state.sortBy = 'default';     // Reset sort on home
+                this.state.filterCategory = 'all'; 
+                this.state.sortBy = 'default';     
+                this.state.isFilterOpen = false;
+                this.state.isSortOpen = false;
                 this.renderHome();
                 window.scrollTo(0, 0);
             },
@@ -440,7 +463,7 @@
                 }
                 
                 this.updateCartUI();
-                this.toggleCart(true); // Open the cart slide-out to confirm
+                this.toggleCart(true); 
             },
 
             updateQuantity(productId, delta) {
@@ -466,7 +489,6 @@
 
                 if (this.state.isCartOpen) {
                     overlay.classList.remove('hidden');
-                    // Timeout allows display:block to apply before animating opacity/transform
                     setTimeout(() => {
                         overlay.classList.remove('opacity-0');
                         panel.classList.remove('translate-x-full');
@@ -476,7 +498,7 @@
                     panel.classList.add('translate-x-full');
                     setTimeout(() => {
                         overlay.classList.add('hidden');
-                    }, 300); // Wait for transition duration
+                    }, 300); 
                 }
             },
 
@@ -486,7 +508,6 @@
                 const cartItemsContainer = document.getElementById('cart-items');
                 const cartTotal = document.getElementById('cart-total');
 
-                // Calculate Totals
                 let totalItems = 0;
                 let totalPrice = 0;
                 
@@ -495,12 +516,10 @@
                     totalPrice += item.quantity * item.product.price;
                 });
 
-                // Update Badges
                 if (navCount) navCount.innerText = totalItems;
                 if (floatCount) floatCount.innerText = totalItems;
                 if (cartTotal) cartTotal.innerText = 'RM' + totalPrice;
 
-                // Update List
                 if (this.state.cart.length === 0) {
                     cartItemsContainer.innerHTML = '<div class="text-center text-[#8A4A4A] mt-10">Your cart is empty.</div>';
                 } else {
@@ -541,35 +560,62 @@
                 const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
                 window.open(url, '_blank');
 
-                // Clear the cart completely after redirecting to WhatsApp
                 this.state.cart = [];
                 this.updateCartUI();
                 this.toggleCart(false);
             },
 
+            // --- PREMIUM CUSTOM DROPDOWN LOGIC ---
+            toggleDropdown(type, forceState) {
+                const isFilter = type === 'filter';
+                const menu = document.getElementById(`${type}-menu`);
+                const icon = document.getElementById(`${type}-icon`);
+
+                let newState = forceState !== undefined ? forceState : (isFilter ? !this.state.isFilterOpen : !this.state.isSortOpen);
+
+                if (isFilter) {
+                    this.state.isFilterOpen = newState;
+                    if(newState) this.toggleDropdown('sort', false); // close the other
+                } else {
+                    this.state.isSortOpen = newState;
+                    if(newState) this.toggleDropdown('filter', false); // close the other
+                }
+
+                if(newState) {
+                    menu.classList.remove('hidden');
+                    icon.classList.add('rotate-180');
+                } else {
+                    menu.classList.add('hidden');
+                    icon.classList.remove('rotate-180');
+                }
+            },
+
             // --- FILTERING & SORTING LOGIC ---
-            setFilter(val) {
+            setFilter(val, label) {
                 this.state.filterCategory = val;
+                const labelElement = document.getElementById('filter-label');
+                if(labelElement) labelElement.innerText = label;
+                this.toggleDropdown('filter', false);
                 this.renderFilteredProducts();
             },
 
-            setSort(val) {
+            setSort(val, label) {
                 this.state.sortBy = val;
+                const labelElement = document.getElementById('sort-label');
+                if(labelElement) labelElement.innerText = label;
+                this.toggleDropdown('sort', false);
                 this.renderFilteredProducts();
             },
 
             renderFilteredProducts() {
                 let filtered = [...products];
 
-                // Apply Filter
                 if (this.state.filterCategory === 'trial') {
                     filtered = filtered.filter(p => p.isTrial);
                 } else if (this.state.filterCategory !== 'all') {
-                    // Search suitable array for "normal", "oily", "dry"
                     filtered = filtered.filter(p => p.suitable.some(s => s.toLowerCase().includes(this.state.filterCategory)));
                 }
 
-                // Apply Sort
                 if (this.state.sortBy === 'price-low') {
                     filtered.sort((a, b) => a.price - b.price);
                 } else if (this.state.sortBy === 'price-high') {
@@ -577,7 +623,6 @@
                 } else if (this.state.sortBy === 'name-asc') {
                     filtered.sort((a, b) => a.name.localeCompare(b.name));
                 } else {
-                    // default: Sort by ID for consistent default view
                     filtered.sort((a, b) => a.id - b.id);
                 }
 
@@ -591,20 +636,117 @@
                 }
             },
 
+            // --- REVIEW SECTION LOGIC ---
+            setRating(rating) {
+                this.state.reviewRating = rating;
+                this.updateStarUI(rating);
+            },
+            
+            hoverRating(rating) {
+                // Visualize hover, but fallback to selected rating if not hovering
+                this.updateStarUI(rating || this.state.reviewRating);
+            },
+
+            updateStarUI(rating) {
+                for(let i = 1; i <= 5; i++) {
+                    const star = document.getElementById(`review-star-${i}`);
+                    if(!star) continue;
+                    if(i <= rating) {
+                        star.classList.remove('stroke-white', 'fill-transparent');
+                        star.classList.add('stroke-yellow-400', 'fill-yellow-400');
+                    } else {
+                        star.classList.add('stroke-white', 'fill-transparent');
+                        star.classList.remove('stroke-yellow-400', 'fill-yellow-400');
+                    }
+                }
+            },
+
+            toggleReviewProduct(productId) {
+                const index = this.state.reviewProducts.indexOf(productId);
+                if (index === -1) {
+                    this.state.reviewProducts.push(productId);
+                } else {
+                    this.state.reviewProducts.splice(index, 1);
+                }
+                this.updateReviewProductUI();
+            },
+
+            updateReviewProductUI() {
+                // Only unique main products (ignoring trial packs for simplicity in reviews)
+                const uniqueProducts = products.filter(p => !p.isTrial);
+                const container = document.getElementById('review-products-container');
+                if(!container) return;
+
+                container.innerHTML = uniqueProducts.map(p => {
+                    const isSelected = this.state.reviewProducts.includes(p.id);
+                    return `
+                        <div onclick="app.toggleReviewProduct(${p.id})" 
+                             class="flex-shrink-0 px-4 py-1.5 rounded-full text-xs md:text-sm cursor-pointer select-none transition-all duration-300 font-medium border
+                             ${isSelected ? 'bg-white text-[#B06D6D] border-white shadow-md' : 'bg-transparent text-white border-white/50 hover:bg-white/10'}">
+                            ${p.name}
+                        </div>
+                    `;
+                }).join('');
+            },
+
+            submitReview(event) {
+                event.preventDefault();
+                
+                const titleInput = document.getElementById('review-title');
+                const contentInput = document.getElementById('review-content');
+
+                if(this.state.reviewRating === 0) {
+                    Swal.fire({ title: 'Oops!', text: 'Please select a star rating.', icon: 'warning', confirmButtonColor: '#B86B6B' });
+                    return;
+                }
+                if(this.state.reviewProducts.length === 0) {
+                    Swal.fire({ title: 'Oops!', text: 'Please select at least one product to review.', icon: 'warning', confirmButtonColor: '#B86B6B' });
+                    return;
+                }
+
+                // 1. Gather all data into a structured JSON Object
+                const reviewData = {
+                    rating: this.state.reviewRating,
+                    products: this.state.reviewProducts.map(id => products.find(p => p.id === id).name),
+                    title: titleInput.value,
+                    content: contentInput.value,
+                    date: new Date().toISOString()
+                };
+
+                // 2. Output to console to show data is ready for a Database
+                console.log("----- REVIEW DATA SUBMITTED -----");
+                console.log(JSON.stringify(reviewData, null, 2));
+                console.log("---------------------------------");
+
+                // 3. Show Success Alert
+                Swal.fire({ 
+                    title: 'Thank You!', 
+                    text: 'Your review data has been collected (check console for JSON) and is ready for future database integration.', 
+                    icon: 'success', 
+                    confirmButtonColor: '#B86B6B' 
+                });
+
+                // Reset Form state
+                this.state.reviewRating = 0;
+                this.state.reviewProducts = [];
+                this.updateStarUI(0);
+                this.updateReviewProductUI();
+                titleInput.value = '';
+                contentInput.value = '';
+            },
+
             // Updates the main image when a thumbnail is clicked
             setProductImage(index) {
                 this.state.selectedImageIndex = index;
                 const mainImg = document.getElementById('main-product-image');
                 const mockBottle = document.getElementById('mock-bottle');
                 
-                // Switch image source
                 if (mainImg) {
-                    mainImg.style.display = 'block'; // Ensure image is visible
+                    mainImg.style.display = 'block'; 
                     mainImg.src = this.state.selectedProduct.images[index];
-                    if (mockBottle) mockBottle.style.display = 'none'; // Hide mock bottle
+                    if (mockBottle) mockBottle.style.display = 'none'; 
                 }
 
-                // Update thumbnail borders to show which is active
                 document.querySelectorAll('.thumbnail-btn').forEach((btn, i) => {
                     if (i === index) {
                         btn.classList.add('border-[#8A4A4A]');
@@ -648,7 +790,6 @@
                 const container = document.getElementById('app-container');
                 container.innerHTML = `
                     <div class="bg-[#F5F0EB] min-h-screen pb-16 fade-in">
-                        <!-- HEADER SECTION -->
                         <section class="header-bg pt-16 pb-16 text-center shadow-inner">
                             <div class="max-w-4xl mx-auto px-4">
                                 <h1 class="text-4xl md:text-6xl text-gold mb-4 tracking-wide font-serif uppercase">Our Story</h1>
@@ -656,30 +797,15 @@
                             </div>
                         </section>
 
-                        <!-- ABOUT US CONTENT -->
                         <section class="py-16 px-6 relative -mt-8">
                             <div class="max-w-3xl mx-auto bg-white p-8 md:p-14 rounded-3xl shadow-xl border border-rose-100 text-[#4A4A4A] leading-relaxed space-y-8 font-sans text-base md:text-lg">
-                                <p>
-                                    In the ever-evolving world of aesthetic medicine, where innovation meets patient care, one name has quietly yet powerfully stood the test of time—Dermdefine™. Founded in 2007 by Dr. Chin Shih Choon, a respected aesthetic physician and thought leader in the field, Dermdefine™ began with a clear mission: to create a results-driven, clinically effective skincare line tailored for dermatologists, aesthetic physicians, and aesthetic professionals. 
-                                </p>
-                                <p>
-                                    Dermdefine™ was born from real clinical need. As an active practitioner, Dr. Chin recognized a gap in the market for medical-grade skincare that combined the safety and efficacy demanded in clinical settings with the sensory elegance that patients desire. The answer was a line of products crafted with carefully selected active ingredients known for their soothing, brightening, and rejuvenating properties. 
-                                </p>
-                                <p>
-                                    From its inception, Dermdefine™ has placed quality at the core of every formulation. Key ingredients such as alpha bisabolol, a powerful anti-inflammatory and calming agent, and arbutin, a trusted skin brightener, were thoughtfully included to target common skin concerns such as sensitivity, pigmentation, and dullness. Enriched with vitamin C and vitamin E, known for their antioxidant and collagen-boosting properties, Dermdefine™ offered more than just skincare—it delivered skin transformation. The addition of essential oils added not only therapeutic benefits but a sensory touch that elevated each product experience. 
-                                </p>
-                                <p>
-                                    Positioned as a clinical skincare solution, Dermdefine™ quickly gained the trust of medical professionals across Malaysia and the region. It became a staple in aesthetic clinics and medical spas, recognized for its consistent performance, safety, and patient satisfaction. For nearly two decades, it has supported skin health in a way that only a physician-formulated brand can. 
-                                </p>
-                                <p>
-                                    Today, as the skincare landscape grows increasingly competitive and consumer expectations evolve, Dermdefine™ is entering a bold new chapter. Embracing innovation while remaining true to its clinical roots, Dermdefine™ is proud to introduce new and improved formulations, a refined brand identity, and premium packaging that reflects the sophistication of its science. 
-                                </p>
-                                <p>
-                                    This transformation is more than skin-deep. With enhanced stability, improved ingredient synergy, and a commitment to sustainability and luxury, the new Dermdefine™ range represents the perfect union of science, experience, and elegance. Whether used post-treatment in clinic or as part of a daily home regimen, every Dermdefine™ product continues to embody the highest standards of dermatological care. 
-                                </p>
-                                <p>
-                                    Dermdefine’s legacy is one of integrity, efficacy, and continual evolution. What began as a physician’s vision has become a respected skincare brand trusted by professionals and loved by patients. And now, with a renewed identity and a future-focused direction, Dermdefine is ready to redefine skincare once again—with confidence, care, and clinical excellence.
-                                </p>
+                                <p>In the ever-evolving world of aesthetic medicine, where innovation meets patient care, one name has quietly yet powerfully stood the test of time—Dermdefine™. Founded in 2007 by Dr. Chin Shih Choon, a respected aesthetic physician and thought leader in the field, Dermdefine™ began with a clear mission: to create a results-driven, clinically effective skincare line tailored for dermatologists, aesthetic physicians, and aesthetic professionals.</p>
+                                <p>Dermdefine™ was born from real clinical need. As an active practitioner, Dr. Chin recognized a gap in the market for medical-grade skincare that combined the safety and efficacy demanded in clinical settings with the sensory elegance that patients desire. The answer was a line of products crafted with carefully selected active ingredients known for their soothing, brightening, and rejuvenating properties.</p>
+                                <p>From its inception, Dermdefine™ has placed quality at the core of every formulation. Key ingredients such as alpha bisabolol, a powerful anti-inflammatory and calming agent, and arbutin, a trusted skin brightener, were thoughtfully included to target common skin concerns such as sensitivity, pigmentation, and dullness. Enriched with vitamin C and vitamin E, known for their antioxidant and collagen-boosting properties, Dermdefine™ offered more than just skincare—it delivered skin transformation. The addition of essential oils added not only therapeutic benefits but a sensory touch that elevated each product experience.</p>
+                                <p>Positioned as a clinical skincare solution, Dermdefine™ quickly gained the trust of medical professionals across Malaysia and the region. It became a staple in aesthetic clinics and medical spas, recognized for its consistent performance, safety, and patient satisfaction. For nearly two decades, it has supported skin health in a way that only a physician-formulated brand can.</p>
+                                <p>Today, as the skincare landscape grows increasingly competitive and consumer expectations evolve, Dermdefine™ is entering a bold new chapter. Embracing innovation while remaining true to its clinical roots, Dermdefine™ is proud to introduce new and improved formulations, a refined brand identity, and premium packaging that reflects the sophistication of its science.</p>
+                                <p>This transformation is more than skin-deep. With enhanced stability, improved ingredient synergy, and a commitment to sustainability and luxury, the new Dermdefine™ range represents the perfect union of science, experience, and elegance. Whether used post-treatment in clinic or as part of a daily home regimen, every Dermdefine™ product continues to embody the highest standards of dermatological care.</p>
+                                <p>Dermdefine’s legacy is one of integrity, efficacy, and continual evolution. What began as a physician’s vision has become a respected skincare brand trusted by professionals and loved by patients. And now, with a renewed identity and a future-focused direction, Dermdefine is ready to redefine skincare once again—with confidence, care, and clinical excellence.</p>
                             </div>
                         </section>
                     </div>
@@ -700,7 +826,7 @@
                         </div>
                     </section>
 
-                    <!-- VISUAL HERO (Banner Image without constraints) -->
+                    <!-- VISUAL HERO -->
                     <section class="w-full bg-[#F5F0EB] pt-8 md:pt-12">
                         <div class="max-w-[1400px] mx-auto px-4 flex justify-center">
                             <img src="assets/images/dermclear_GROUP.png" onerror="this.src='assets/images/dermclear_GROUP.png'" alt="DermDefine Product Collection" class="w-full h-auto object-contain block">
@@ -710,9 +836,7 @@
                     <!-- FAQ SECTION -->
                     <section class="bg-[#F5F0EB] pb-16 pt-8">
                         <div class="max-w-6xl mx-auto px-6">
-                            <div class="grid md:grid-cols-3 gap-8" id="faq-container">
-                                <!-- FAQ Items rendered dynamically -->
-                            </div>
+                            <div class="grid md:grid-cols-3 gap-8" id="faq-container"></div>
                         </div>
                     </section>
 
@@ -739,23 +863,19 @@
                         </div>
                     </section>
 
-                    <!-- CONTINUOUS BACKGROUND CONTAINER -->
+                    <!-- SKIN TYPE SECTION -->
                     <div class="bg-[#B06D6D] text-white">
-                        
-                        <!-- SKIN TYPE SECTION -->
                         <section class="py-12 md:py-16 px-6 bg-[#B06D6D]">
                             <div class="max-w-5xl mx-auto">
                                 <h2 class="text-xl md:text-2xl font-bold uppercase tracking-widest mb-6 font-sans">Your Skin Type</h2>
                                 <div class="grid grid-cols-2 gap-4 md:gap-8">
-                                    <!-- Normal Skin -->
-                                    <div onclick="document.getElementById('all-products').scrollIntoView({behavior: 'smooth'}); app.setFilter('normal');" class="relative rounded-2xl md:rounded-3xl overflow-hidden aspect-[1.5] shadow-md group cursor-pointer bg-gray-200">
+                                    <div onclick="document.getElementById('all-products').scrollIntoView({behavior: 'smooth'}); app.setFilter('normal', 'Normal Skin');" class="relative rounded-2xl md:rounded-3xl overflow-hidden aspect-[1.5] shadow-md group cursor-pointer bg-gray-200">
                                         <img src="assets/images/products/type_of_skin/type_of_skin-01.jpg" onerror="this.src='https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?q=80&w=800&auto=format&fit=crop'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Normal Skin">
                                         <div class="absolute bottom-0 left-0 right-0 h-[25%] min-h-[50px] bg-white/70 backdrop-blur-md flex items-center justify-center">
                                             <span class="text-[#B06D6D] font-bold text-lg md:text-3xl tracking-widest uppercase">Normal Skin</span>
                                         </div>
                                     </div>
-                                    <!-- Oily Skin -->
-                                    <div onclick="document.getElementById('all-products').scrollIntoView({behavior: 'smooth'}); app.setFilter('oily');" class="relative rounded-2xl md:rounded-3xl overflow-hidden aspect-[1.5] shadow-md group cursor-pointer bg-gray-200">
+                                    <div onclick="document.getElementById('all-products').scrollIntoView({behavior: 'smooth'}); app.setFilter('oily', 'Oily Skin');" class="relative rounded-2xl md:rounded-3xl overflow-hidden aspect-[1.5] shadow-md group cursor-pointer bg-gray-200">
                                         <img src="assets/images/products/type_of_skin/type_of_skin-02.jpg" onerror="this.src='https://images.unsplash.com/photo-1515377905703-c4788e51af15?q=80&w=800&auto=format&fit=crop'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Oily Skin">
                                         <div class="absolute bottom-0 left-0 right-0 h-[25%] min-h-[50px] bg-white/70 backdrop-blur-md flex items-center justify-center">
                                             <span class="text-[#B06D6D] font-bold text-lg md:text-3xl tracking-widest uppercase">Oily Skin</span>
@@ -771,33 +891,51 @@
                         <div class="max-w-5xl mx-auto">
                             <h2 class="text-center text-2xl font-serif text-[#8A4A4A] mb-8 uppercase tracking-widest">All Products</h2>
                             
-                            <!-- Search / Filter / Sort Bar -->
+                            <!-- Search / Filter / Sort Bar with Custom Dropdowns -->
                             <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4 bg-rose-50/50 p-4 rounded-2xl border border-rose-100">
-                                <div class="flex items-center gap-3 w-full md:w-auto">
+                                
+                                <!-- Custom Category Dropdown -->
+                                <div id="filter-dropdown-container" class="flex items-center gap-3 w-full md:w-auto relative">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A4A4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
                                     <span class="text-sm font-bold text-rose-900 uppercase tracking-wide">Category:</span>
-                                    <select id="filter-select" onchange="app.setFilter(this.value)" class="flex-1 md:flex-none bg-white border border-rose-200 text-[#8A4A4A] text-sm rounded-lg focus:ring-rose-500 focus:border-rose-500 block p-2 outline-none shadow-sm cursor-pointer">
-                                        <option value="all">All Items</option>
-                                        <option value="normal">Normal Skin</option>
-                                        <option value="oily">Oily Skin</option>
-                                        <option value="dry">Dry Skin</option>
-                                        <option value="trial">Trial Packs Only</option>
-                                    </select>
+                                    
+                                    <div class="relative flex-1 md:flex-none">
+                                        <button onclick="app.toggleDropdown('filter')" class="w-full md:w-48 bg-white border border-rose-200 text-[#8A4A4A] text-sm font-medium rounded-lg px-4 py-2.5 flex justify-between items-center shadow-sm hover:border-rose-300 hover:bg-[#F5F0EB] transition-colors outline-none">
+                                            <span id="filter-label">All Items</span>
+                                            <svg id="filter-icon" class="w-4 h-4 text-rose-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </button>
+                                        <!-- Filter Menu -->
+                                        <div id="filter-menu" class="hidden absolute z-50 w-full mt-2 bg-white border border-rose-100 rounded-xl shadow-xl overflow-hidden font-medium">
+                                            <div onclick="app.setFilter('all', 'All Items')" class="px-4 py-3 text-sm text-[#8A4A4A] hover:bg-rose-50 hover:text-rose-600 cursor-pointer transition-colors border-b border-rose-50">All Items</div>
+                                            <div onclick="app.setFilter('normal', 'Normal Skin')" class="px-4 py-3 text-sm text-[#8A4A4A] hover:bg-rose-50 hover:text-rose-600 cursor-pointer transition-colors border-b border-rose-50">Normal Skin</div>
+                                            <div onclick="app.setFilter('oily', 'Oily Skin')" class="px-4 py-3 text-sm text-[#8A4A4A] hover:bg-rose-50 hover:text-rose-600 cursor-pointer transition-colors border-b border-rose-50">Oily Skin</div>
+                                            <div onclick="app.setFilter('dry', 'Dry Skin')" class="px-4 py-3 text-sm text-[#8A4A4A] hover:bg-rose-50 hover:text-rose-600 cursor-pointer transition-colors border-b border-rose-50">Dry Skin</div>
+                                            <div onclick="app.setFilter('trial', 'Trial Packs Only')" class="px-4 py-3 text-sm text-[#8A4A4A] hover:bg-rose-50 hover:text-rose-600 cursor-pointer transition-colors">Trial Packs Only</div>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="flex items-center gap-3 w-full md:w-auto">
+                                <!-- Custom Sort Dropdown -->
+                                <div id="sort-dropdown-container" class="flex items-center gap-3 w-full md:w-auto relative">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A4A4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
                                     <span class="text-sm font-bold text-rose-900 uppercase tracking-wide">Sort:</span>
-                                    <select id="sort-select" onchange="app.setSort(this.value)" class="flex-1 md:flex-none bg-white border border-rose-200 text-[#8A4A4A] text-sm rounded-lg focus:ring-rose-500 focus:border-rose-500 block p-2 outline-none shadow-sm cursor-pointer">
-                                        <option value="default">Default</option>
-                                        <option value="name-asc">Name (A-Z)</option>
-                                        <option value="price-low">Price (Low to High)</option>
-                                        <option value="price-high">Price (High to Low)</option>
-                                    </select>
+                                    
+                                    <div class="relative flex-1 md:flex-none">
+                                        <button onclick="app.toggleDropdown('sort')" class="w-full md:w-48 bg-white border border-rose-200 text-[#8A4A4A] text-sm font-medium rounded-lg px-4 py-2.5 flex justify-between items-center shadow-sm hover:border-rose-300 hover:bg-[#F5F0EB] transition-colors outline-none">
+                                            <span id="sort-label">Default</span>
+                                            <svg id="sort-icon" class="w-4 h-4 text-rose-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </button>
+                                        <!-- Sort Menu -->
+                                        <div id="sort-menu" class="hidden absolute z-50 right-0 w-full md:w-48 mt-2 bg-white border border-rose-100 rounded-xl shadow-xl overflow-hidden font-medium">
+                                            <div onclick="app.setSort('default', 'Default')" class="px-4 py-3 text-sm text-[#8A4A4A] hover:bg-rose-50 hover:text-rose-600 cursor-pointer transition-colors border-b border-rose-50">Default</div>
+                                            <div onclick="app.setSort('name-asc', 'Name (A-Z)')" class="px-4 py-3 text-sm text-[#8A4A4A] hover:bg-rose-50 hover:text-rose-600 cursor-pointer transition-colors border-b border-rose-50">Name (A-Z)</div>
+                                            <div onclick="app.setSort('price-low', 'Price (Low to High)')" class="px-4 py-3 text-sm text-[#8A4A4A] hover:bg-rose-50 hover:text-rose-600 cursor-pointer transition-colors border-b border-rose-50">Price (Low to High)</div>
+                                            <div onclick="app.setSort('price-high', 'Price (High to Low)')" class="px-4 py-3 text-sm text-[#8A4A4A] hover:bg-rose-50 hover:text-rose-600 cursor-pointer transition-colors">Price (High to Low)</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Grid that gets injected by JavaScript -->
                             <div id="filtered-products-grid" class="grid grid-cols-2 md:grid-cols-4 gap-6 gap-y-12 transition-all duration-300">
                                 <!-- JS will populate this -->
                             </div>
@@ -816,11 +954,9 @@
                                             <p class="text-sm md:text-base font-bold font-sans">Follow @dermdefine on Facebook & Instagram</p>
                                             <div class="flex gap-2">
                                                 <div class="w-8 h-8 rounded-full border border-white flex items-center justify-center cursor-pointer hover:bg-white hover:text-[#B06D6D] transition-colors">
-                                                    <!-- IG Icon -->
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                                                 </div>
                                                 <div class="w-8 h-8 rounded-full border border-white flex items-center justify-center cursor-pointer hover:bg-white hover:text-[#B06D6D] transition-colors">
-                                                    <!-- FB Icon -->
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
                                                 </div>
                                             </div>
@@ -830,13 +966,11 @@
                                 
                                 <div class="relative group">
                                     <div class="flex gap-4 overflow-x-auto no-scrollbar pb-2 snap-x">
-                                        <!-- Placeholders for IG posts -->
                                         <div class="snap-start flex-shrink-0 w-40 h-40 md:w-56 md:h-56 bg-[#F5F0EB] rounded-2xl shadow-sm cursor-pointer hover:opacity-90 transition-opacity"></div>
                                         <div class="snap-start flex-shrink-0 w-40 h-40 md:w-56 md:h-56 bg-[#F5F0EB] rounded-2xl shadow-sm cursor-pointer hover:opacity-90 transition-opacity"></div>
                                         <div class="snap-start flex-shrink-0 w-40 h-40 md:w-56 md:h-56 bg-[#F5F0EB] rounded-2xl shadow-sm cursor-pointer hover:opacity-90 transition-opacity"></div>
                                         <div class="snap-start flex-shrink-0 w-40 h-40 md:w-56 md:h-56 bg-[#F5F0EB] rounded-2xl shadow-sm cursor-pointer hover:opacity-90 transition-opacity"></div>
                                     </div>
-                                    <!-- Right Arrow Overlay -->
                                     <div class="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 bg-black/10 backdrop-blur-sm border border-white/40 flex items-center justify-center cursor-pointer hover:bg-black/20 rounded shadow-sm opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                                     </div>
@@ -844,32 +978,40 @@
                             </div>
                         </section>
 
-                        <!-- REVIEWS -->
+                        <!-- REVIEWS (Upgraded for Database Readiness) -->
                         <section class="py-12 md:py-16 px-6">
                             <div class="max-w-xl mx-auto flex flex-col items-center text-center">
                                 <h3 class="font-bold text-xl md:text-2xl mb-4 uppercase tracking-widest font-sans">Write A Review</h3>
                                 
-                                <div class="w-full mb-8">
+                                <!-- Star Rating (Now Interactive) -->
+                                <div class="w-full mb-6" onmouseleave="app.hoverRating(0)">
                                     <label class="block text-sm md:text-base font-medium mb-2">Rating</label>
                                     <div class="flex space-x-1 justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer hover:fill-white"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer hover:fill-white"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer hover:fill-white"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer hover:fill-white"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer hover:fill-white"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                        <svg id="review-star-1" onclick="app.setRating(1)" onmouseover="app.hoverRating(1)" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="transparent" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer transition-colors duration-200"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                        <svg id="review-star-2" onclick="app.setRating(2)" onmouseover="app.hoverRating(2)" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="transparent" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer transition-colors duration-200"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                        <svg id="review-star-3" onclick="app.setRating(3)" onmouseover="app.hoverRating(3)" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="transparent" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer transition-colors duration-200"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                        <svg id="review-star-4" onclick="app.setRating(4)" onmouseover="app.hoverRating(4)" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="transparent" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer transition-colors duration-200"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                        <svg id="review-star-5" onclick="app.setRating(5)" onmouseover="app.hoverRating(5)" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="transparent" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer transition-colors duration-200"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                                     </div>
                                 </div>
 
-                                <form class="space-y-6 w-full" onsubmit="event.preventDefault(); Swal.fire({ title: 'Coming Soon!', text: 'The review feature is currently under development.', icon: 'info', confirmButtonColor: '#B86B6B' });">
+                                <!-- Multiple Product Selector -->
+                                <div class="w-full mb-8">
+                                    <label class="block text-sm md:text-base font-medium mb-3">Which product(s) are you reviewing?</label>
+                                    <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2 justify-start md:justify-center" id="review-products-container">
+                                        <!-- JS will populate pill buttons here -->
+                                    </div>
+                                </div>
+
+                                <form class="space-y-6 w-full" onsubmit="app.submitReview(event)">
                                     <div class="text-center">
                                         <label class="block text-sm md:text-base font-medium mb-2">Review Title</label>
-                                        <input type="text" placeholder="Give your review a title" class="w-full bg-transparent border border-white/50 px-4 py-3 text-center text-white placeholder-white/50 focus:outline-none focus:border-white transition-colors" required>
+                                        <input type="text" id="review-title" placeholder="Give your review a title" class="w-full bg-transparent border border-white/50 px-4 py-3 text-center text-white placeholder-white/50 focus:outline-none focus:border-white transition-colors" required>
                                     </div>
                                     <div class="text-center">
                                         <label class="block text-sm md:text-base font-medium mb-2">Review content</label>
-                                        <textarea rows="4" placeholder="Start writing here..." class="w-full bg-transparent border border-white/50 px-4 py-3 text-center text-white placeholder-white/50 focus:outline-none focus:border-white transition-colors" required></textarea>
+                                        <textarea id="review-content" rows="4" placeholder="Start writing here..." class="w-full bg-transparent border border-white/50 px-4 py-3 text-center text-white placeholder-white/50 focus:outline-none focus:border-white transition-colors" required></textarea>
                                     </div>
-                                    <!-- Beautiful Submit Button to trigger the alert -->
                                     <button type="submit" class="w-full bg-white text-[#B06D6D] font-bold py-3 px-6 rounded-xl shadow-md hover:bg-gray-100 transition-colors uppercase tracking-wide mt-4">
                                         Submit Review
                                     </button>
@@ -879,16 +1021,21 @@
                     </div>
                 `;
                 
-                // Init dynamic elements after HTML injection
                 this.renderFaqSection();
+                this.renderFilteredProducts(); 
+                
+                // Initialize Review Product Selector
+                this.updateReviewProductUI();
+                // Ensure stars display current selection if user navigated away and back
+                this.updateStarUI(this.state.reviewRating);
 
-                // Maintain UI sync for filter/sort dropdowns
-                const filterSelect = document.getElementById('filter-select');
-                if (filterSelect) filterSelect.value = this.state.filterCategory;
-                const sortSelect = document.getElementById('sort-select');
-                if (sortSelect) sortSelect.value = this.state.sortBy;
-
-                this.renderFilteredProducts(); // Populate the grid initially
+                // Re-sync dropdown labels based on active state (incase user navigates back to home view)
+                const filterLabel = document.getElementById('filter-label');
+                const sortLabel = document.getElementById('sort-label');
+                if(filterLabel && this.state.filterCategory !== 'all') {
+                    // Match to label text logic (simplification)
+                    filterLabel.innerText = this.state.filterCategory.charAt(0).toUpperCase() + this.state.filterCategory.slice(1) + (this.state.filterCategory === 'trial' ? ' Packs' : ' Skin');
+                }
             },
 
             renderFaqSection() {
@@ -899,18 +1046,13 @@
                     const isActive = this.state.activeFaq === i;
                     return `
                     <div class="faq-item ${isActive ? 'active' : ''} cursor-pointer group" onclick="app.toggleFaq(${i})">
-                        
-                        <!-- Top Horizontal Line (Matched to design) -->
                         <div class="faq-line h-[1px] w-full ${isActive ? 'bg-[#8A4A4A]' : 'bg-rose-200'} mb-4 transition-colors duration-300"></div>
-                        
                         <div class="flex justify-between items-start mb-4">
                             <h4 class="font-serif text-[#8A4A4A] text-base md:text-lg leading-tight pr-4 ${isActive ? 'font-bold' : ''}">
                                 ${f.q}
                             </h4>
                             <span class="text-rose-400 text-xl font-light">${isActive ? '−' : '+'}</span>
                         </div>
-
-                        <!-- Answer content -->
                         <div class="overflow-hidden transition-all duration-300 ${isActive ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}">
                             <p class="text-sm text-[#8A4A4A]/80 leading-relaxed pb-4">
                                 ${f.a}
@@ -924,14 +1066,11 @@
                 const p = this.state.selectedProduct;
                 const container = document.getElementById('app-container');
                 
-                // Construct the Gallery HTML based on available images
                 let imageGalleryHtml = '';
                 
                 if (p.images && p.images.length > 0) {
-                    // MAIN IMAGE 
                     imageGalleryHtml += `
                         <div class="bg-gradient-to-b ${p.color} rounded-3xl aspect-[4/5] md:aspect-square flex items-center justify-center relative shadow-xl overflow-hidden w-full">
-                            <!-- Fallback Mock Bottle (Only shows if real image fails to load) -->
                             <div id="mock-bottle" class="w-full h-full absolute inset-0 flex items-center justify-center z-10" style="display: none;">
                                 <div class="w-full h-full absolute inset-0 bg-white/10"></div>
                                 <div class="w-24 md:w-32 h-2/3 bg-white/40 backdrop-blur-md rounded-full border border-white/60 shadow-2xl flex flex-col items-center pt-8 relative z-10">
@@ -944,21 +1083,16 @@
                                     </div>
                                 </div>
                             </div>
-                            
-                            <!-- Actual Image Tag -->
                             <img id="main-product-image" src="${p.images[0]}" alt="${p.name}" class="w-full h-full object-contain absolute inset-0 z-20 p-6 md:p-12 transition-opacity duration-300 drop-shadow-2xl" onerror="this.style.display='none'; document.getElementById('mock-bottle').style.display='flex';">
                         </div>
                     `;
 
-                    // THUMBNAILS (Only show if there is more than 1 image)
                     if (p.images.length > 1) {
                         imageGalleryHtml += `
                             <div class="flex gap-3 overflow-x-auto py-2 mt-4 no-scrollbar px-1 justify-start snap-x">
                                 ${p.images.map((img, idx) => `
                                     <button onclick="app.setProductImage(${idx})" class="thumbnail-btn snap-start flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border-2 ${idx === 0 ? 'border-[#8A4A4A]' : 'border-transparent shadow-sm'} bg-white/50 backdrop-blur-sm transition-all hover:border-rose-300 relative group">
-                                        <!-- Thumbnail Image -->
                                         <img src="${img}" class="w-full h-full object-contain p-2 relative z-20" alt="${p.name} View ${idx + 1}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                        <!-- Fallback Thumbnail Icon (If image broken) -->
                                         <div class="absolute inset-0 flex items-center justify-center text-[#8A4A4A]/50 bg-white/80 z-10" style="display: none;">
                                             <span class="font-serif text-2xl font-bold">D</span>
                                         </div>
@@ -968,7 +1102,6 @@
                         `;
                     }
                 } else {
-                    // FALLBACK: If array is completely empty, just show CSS mock
                     imageGalleryHtml += `
                         <div class="bg-gradient-to-b ${p.color} rounded-3xl aspect-[4/5] flex items-center justify-center relative shadow-xl overflow-hidden w-full">
                             <div class="w-full h-full absolute inset-0 bg-white/10"></div>
@@ -993,12 +1126,10 @@
                             </button>
 
                             <div class="grid md:grid-cols-2 gap-8 lg:gap-16 items-start">
-                                <!-- Image Gallery Side -->
                                 <div class="flex flex-col w-full">
                                     ${imageGalleryHtml}
                                 </div>
 
-                                <!-- Text Side -->
                                 <div class="mt-6 md:mt-0">
                                     <div class="flex items-center gap-2 mb-2">
                                         ${p.isTrial ? `<span class="bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wide">Trial</span>` : ''}
@@ -1032,7 +1163,6 @@
                                             <p class="text-sm text-[#8A4A4A]/80">${p.ingredients}</p>
                                         </div>
 
-                                        <!-- Expandable How To Use Section -->
                                         <div class="border-t border-rose-200 mt-6 pt-4">
                                             <details class="group">
                                                 <summary class="flex justify-between items-center font-bold cursor-pointer list-none text-[#5C3A3A] text-sm uppercase transition-colors hover:text-rose-500">
@@ -1054,7 +1184,6 @@
                                     </div>
 
                                     <button onclick="app.addToCart(${p.id})" class="w-full bg-[#8A4A4A] hover:bg-[#5C3A3A] text-white font-bold py-4 rounded-xl shadow-lg transition-all uppercase tracking-wide flex items-center justify-center gap-2">
-                                        <!-- Cart Icon -->
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                                         Add To Cart
                                     </button>
