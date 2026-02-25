@@ -133,7 +133,14 @@
 
     <!-- Footer -->
     <footer class="bg-[#5C3A3A] text-white/70 py-8 px-6 text-center text-xs mt-auto">
-        <p>&copy; 2026 DERMDEFINE. Expert Medical Skincare. All rights reserved.</p>
+        <div class="max-w-6xl mx-auto flex flex-col items-center gap-3">
+            <p>&copy; 2026 DERMDEFINE. Expert Medical Skincare. All rights reserved.</p>
+            <div class="flex gap-4 text-white/50 mt-2">
+                <button onclick="Swal.fire({ title: 'Coming Soon!', text: 'Our Privacy Policy is currently being updated and will be available soon.', icon: 'info', confirmButtonColor: '#B86B6B' })" class="hover:text-white transition-colors underline decoration-white/30 hover:decoration-white">Privacy Policy</button>
+                <span class="opacity-50">|</span>
+                <button onclick="Swal.fire({ title: 'Coming Soon!', text: 'Our Terms of Service are currently being updated and will be available soon.', icon: 'info', confirmButtonColor: '#B86B6B' })" class="hover:text-white transition-colors underline decoration-white/30 hover:decoration-white">Terms of Service</button>
+            </div>
+        </div>
     </footer>
 
     <!-- JAVASCRIPT LOGIC -->
