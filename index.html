@@ -141,7 +141,7 @@
             <div class="flex gap-4 text-white/50 mt-2">
                 <button onclick="Swal.fire({ title: 'Coming Soon!', text: 'Our Privacy Policy is currently being updated and will be available soon.', icon: 'info', confirmButtonColor: '#B86B6B' })" class="hover:text-white transition-colors underline decoration-white/30 hover:decoration-white">Privacy Policy</button>
                 <span class="opacity-50">|</span>
-                <button onclick="Swal.fire({ title: 'Coming Soon!', text: 'Our Terms of Service are currently being updated and will be available soon.', icon: 'info', confirmButtonColor: '#B86B6B' })" class="hover:text-white transition-colors underline decoration-white/30 hover:decoration-white">Terms of Service</button>
+                <button onclick="app.goTerms()" class="hover:text-white transition-colors underline decoration-white/30 hover:decoration-white">Terms of Use</button>
             </div>
         </div>
     </footer>
@@ -430,6 +430,14 @@
                 this.state.selectedProduct = null;
                 this.state.selectedImageIndex = 0;
                 this.renderAbout();
+                window.scrollTo(0, 0);
+            },
+
+            goTerms() {
+                this.state.view = 'terms';
+                this.state.selectedProduct = null;
+                this.state.selectedImageIndex = 0;
+                this.renderTerms();
                 window.scrollTo(0, 0);
             },
 
@@ -831,6 +839,29 @@
                                 <p>Today, as the skincare landscape grows increasingly competitive and consumer expectations evolve, Dermdefine™ is entering a bold new chapter. Embracing innovation while remaining true to its clinical roots, Dermdefine™ is proud to introduce new and improved formulations, a refined brand identity, and premium packaging that reflects the sophistication of its science.</p>
                                 <p>This transformation is more than skin-deep. With enhanced stability, improved ingredient synergy, and a commitment to sustainability and luxury, the new Dermdefine™ range represents the perfect union of science, experience, and elegance. Whether used post-treatment in clinic or as part of a daily home regimen, every Dermdefine™ product continues to embody the highest standards of dermatological care.</p>
                                 <p>Dermdefine’s legacy is one of integrity, efficacy, and continual evolution. What began as a physician’s vision has become a respected skincare brand trusted by professionals and loved by patients. And now, with a renewed identity and a future-focused direction, Dermdefine is ready to redefine skincare once again—with confidence, care, and clinical excellence.</p>
+                            </div>
+                        </section>
+                    </div>
+                `;
+            },
+
+            renderTerms() {
+                const container = document.getElementById('app-container');
+                container.innerHTML = `
+                    <div class="bg-[#F5F0EB] min-h-screen pb-16 fade-in">
+                        <section class="header-bg pt-16 pb-16 text-center shadow-inner">
+                            <div class="max-w-4xl mx-auto px-4">
+                                <h1 class="text-4xl md:text-6xl text-gold mb-4 tracking-wide font-serif uppercase">Terms of Use</h1>
+                                <p class="text-white text-lg font-light tracking-widest uppercase">Issued on 25th February 2026</p>
+                            </div>
+                        </section>
+
+                        <section class="py-16 px-6 relative -mt-8">
+                            <div class="max-w-3xl mx-auto bg-white p-8 md:p-14 rounded-3xl shadow-xl border border-rose-100 text-[#4A4A4A] leading-relaxed space-y-8 font-sans text-base md:text-lg">
+                                <p>This website, DermDefine (<a href="https://www.dermdefine.com" target="_blank" class="text-rose-500 hover:underline">www.dermdefine.com</a>), is a brand wholly owned by Bloom Healthcare Group Sdn Bhd [202101014286 (1414586-X)] (“BHG”). All operations, products, and services provided through this website are fully managed and operated by BHG and its affiliates. All content on this website is the property of BHG and DermDefine.</p>
+                                <p>By accessing and using this website, users agree to be bound by the terms and conditions stated herein, without limitation or qualification. If you do not agree to these terms and conditions, please do not use this website or download any materials from it.</p>
+                                <p>Users may not copy, distribute, publish, or commercially exploit any content from this website, nor may they use the website for purposes not expressly permitted in these terms. The website must only be used for lawful purposes and in a manner that does not infringe the rights of, or restrict or inhibit the use of the website by, any third party. This includes (but is not limited to) unlawful conduct, harassment, causing distress or inconvenience, transmission of obscene, offensive, defamatory, or racially/ethnically objectionable material, or disrupting the normal flow of communication within the site.</p>
+                                <p>BHG reserves the right to change the format and content of the DermDefine website at any time, without prior notice. BHG may suspend, modify, or discontinue any part of the website, including the availability of any features or services, without notice or liability. Additionally, BHG may impose limits on certain features or restrict access to parts or all of the site as it deems necessary. The website may also be temporarily unavailable due to maintenance, updates, or other reasons determined by BHG.</p>
                             </div>
                         </section>
                     </div>
