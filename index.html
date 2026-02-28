@@ -83,6 +83,10 @@
             </div>
 
             <div class="flex items-center space-x-4">
+                <!-- Mobile Menu Toggle Button -->
+                <button onclick="app.toggleMobileMenu()" class="md:hidden text-[#8A4A4A] hover:text-rose-500 transition-colors">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
                 <button onclick="app.toggleCart(true)" class="text-[#8A4A4A] relative">
                     <!-- Shopping Bag Icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
@@ -96,6 +100,24 @@
     <main id="app-container">
         <!-- Views will be injected here by JavaScript -->
     </main>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-black/60 z-[100] hidden transition-opacity duration-300 opacity-0 md:hidden" onclick="if(event.target === this) app.toggleMobileMenu(false)">
+        <div id="mobile-menu-panel" class="absolute left-0 top-0 bottom-0 w-[250px] bg-white shadow-2xl flex flex-col transition-transform duration-300 -translate-x-full">
+            <div class="p-6 border-b border-rose-100 flex justify-between items-center bg-[#F5F0EB]">
+                <span class="font-serif font-bold text-lg text-[#8A4A4A]">Menu</span>
+                <button onclick="app.toggleMobileMenu(false)" class="text-[#8A4A4A] hover:text-rose-500">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="flex flex-col p-4 space-y-2 text-sm font-medium text-[#8A4A4A] overflow-y-auto">
+                <button onclick="app.goHome(); app.toggleMobileMenu(false);" class="text-left px-4 py-3 hover:bg-rose-50 rounded-lg transition-colors font-bold tracking-wide uppercase">Home</button>
+                <button onclick="app.goHome(); setTimeout(() => document.getElementById('all-products').scrollIntoView({behavior: 'smooth'}), 100); app.toggleMobileMenu(false);" class="text-left px-4 py-3 hover:bg-rose-50 rounded-lg transition-colors font-bold tracking-wide uppercase">Our Products</button>
+                <button onclick="app.goAbout(); app.toggleMobileMenu(false);" class="text-left px-4 py-3 hover:bg-rose-50 rounded-lg transition-colors font-bold tracking-wide uppercase">About Us</button>
+                <button onclick="app.goTerms(); app.toggleMobileMenu(false);" class="text-left px-4 py-3 hover:bg-rose-50 rounded-lg transition-colors font-bold tracking-wide uppercase">Terms of Use</button>
+            </div>
+        </div>
+    </div>
 
     <div id="cart-overlay" class="fixed inset-0 bg-black/60 z-[100] hidden transition-opacity duration-300 opacity-0" onclick="if(event.target === this) app.toggleCart(false)">
         <div id="cart-panel" class="absolute right-0 top-0 bottom-0 w-full md:w-[400px] bg-white shadow-2xl flex flex-col transition-transform duration-300 translate-x-full">
@@ -385,6 +407,7 @@
                 sortBy: 'default',      // Sort state
                 cart: [],              // Shopping Cart Items
                 isCartOpen: false,     // Cart Modal State
+                isMobileMenuOpen: false, // Mobile Menu State
                 // --- Review State Variables ---
                 reviewRating: 0,       // Current selected rating
                 reviewProducts: [],    // Array of selected product IDs to review
@@ -532,6 +555,31 @@
                 } else {
                     overlay.classList.add('opacity-0');
                     panel.classList.add('translate-x-full');
+                    setTimeout(() => {
+                        overlay.classList.add('hidden');
+                    }, 300); 
+                }
+            },
+
+            toggleMobileMenu(forceState) {
+                if (typeof forceState === 'boolean') {
+                    this.state.isMobileMenuOpen = forceState;
+                } else {
+                    this.state.isMobileMenuOpen = !this.state.isMobileMenuOpen;
+                }
+
+                const overlay = document.getElementById('mobile-menu-overlay');
+                const panel = document.getElementById('mobile-menu-panel');
+
+                if (this.state.isMobileMenuOpen) {
+                    overlay.classList.remove('hidden');
+                    setTimeout(() => {
+                        overlay.classList.remove('opacity-0');
+                        panel.classList.remove('-translate-x-full');
+                    }, 10);
+                } else {
+                    overlay.classList.add('opacity-0');
+                    panel.classList.add('-translate-x-full');
                     setTimeout(() => {
                         overlay.classList.add('hidden');
                     }, 300); 
