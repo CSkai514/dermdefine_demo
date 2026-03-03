@@ -378,6 +378,16 @@
             }
         ];
 
+        // --- SECURITY MEASURE ---
+        // Deep freeze the master products array to prevent DevTools tampering of prices
+        const deepFreeze = obj => {
+            Object.keys(obj).forEach(prop => {
+                if (typeof obj[prop] === 'object' && obj[prop] !== null) deepFreeze(obj[prop]);
+            });
+            return Object.freeze(obj);
+        };
+        deepFreeze(products);
+
         const faqs = [
             {
                 id: 0,
@@ -597,7 +607,11 @@
                 
                 this.state.cart.forEach(item => {
                     totalItems += item.quantity;
-                    totalPrice += item.quantity * item.product.price;
+                    // Reference the frozen master product list for UI calculation
+                    const verifiedProduct = products.find(p => p.id === item.product.id);
+                    if (verifiedProduct) {
+                        totalPrice += item.quantity * verifiedProduct.price;
+                    }
                 });
 
                 if (navCount) navCount.innerText = totalItems;
@@ -625,28 +639,72 @@
                 }
             },
 
+            showTamperPolicy(event) {
+                if(event) event.preventDefault();
+                Swal.fire({
+                    title: 'Pricing & Order Policy',
+                    html: `
+                        <div class="text-left text-sm space-y-4 text-[#4A4A4A]">
+                            <p>All prices listed on our website and auto-populated in the WhatsApp checkout message are official and final.</p>
+                            <p><strong class="text-rose-600">Strict Prohibition of Alteration:</strong> Customers are strictly prohibited from manually altering the product names, quantities, or prices in the auto-generated WhatsApp message.</p>
+                            <p><strong>Our Rights:</strong> Bloom Healthcare Group reserves the right to immediately reject or cancel any order where the WhatsApp message has been tampered with. We cross-reference all incoming orders with our official system pricing. Any attempt to fraudulently alter prices will result in order cancellation and may lead to a ban from our services.</p>
+                        </div>
+                    `,
+                    icon: 'info',
+                    confirmButtonColor: '#B86B6B'
+                });
+            },
+
             checkoutViaWhatsapp() {
                 if(this.state.cart.length === 0) {
-                    alert("Your cart is empty! Please add some products first.");
+                    Swal.fire({ title: 'Oops!', text: 'Your cart is empty! Please add some products first.', icon: 'warning', confirmButtonColor: '#B86B6B' });
                     return;
                 }
 
                 let message = "Hi DermDefine! I would like to place an order:%0A%0A";
-                let total = 0;
+                let actualTotal = 0;
 
+                // SECURITY MEASURE: Recalculate from the frozen master list, NOT the cart state
                 this.state.cart.forEach(item => {
-                    message += `- ${item.quantity}x ${item.product.name} (RM${item.product.price})%0A`;
-                    total += item.quantity * item.product.price;
+                    const verifiedProduct = products.find(p => p.id === item.product.id);
+                    if (verifiedProduct) {
+                        message += `- ${item.quantity}x ${verifiedProduct.name} (RM${verifiedProduct.price})%0A`;
+                        actualTotal += item.quantity * verifiedProduct.price;
+                    }
                 });
 
-                message += `%0A*Total: RM${total}*%0A%0APlease let me know the payment details. Thank you!`;
+                message += `%0A*Estimated Total: RM${actualTotal}*%0A%0A(Please verify my order and let me know the payment details). Thank you!`;
 
                 const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
-                window.open(url, '_blank');
 
-                this.state.cart = [];
-                this.updateCartUI();
-                this.toggleCart(false);
+                // Pop out confirmation message
+                Swal.fire({
+                    title: 'Confirm Checkout',
+                    html: `
+                        <div class="text-left mt-2">
+                            <p class="mb-3 text-sm text-[#4A4A4A]">The total price shown in the next step is an estimate for your reference only.</p>
+                            <p class="mb-5 text-sm font-bold text-rose-600">Please DO NOT change the items or prices in the auto-generated WhatsApp message.</p>
+                            <p class="text-xs text-gray-500 border-t border-gray-200 pt-3">
+                                By proceeding, you agree to our 
+                                <a href="#" onclick="app.showTamperPolicy(event)" class="text-rose-500 underline hover:text-rose-700 font-bold">Pricing Policy</a>. 
+                                We reserve the right to reject orders if the auto-generated prices are altered.
+                            </p>
+                        </div>
+                    `,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#25D366', // WhatsApp Green
+                    cancelButtonColor: '#B86B6B',
+                    confirmButtonText: 'Confirm & Go to WhatsApp',
+                    cancelButtonText: 'Back'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.open(url, '_blank');
+                        this.state.cart = [];
+                        this.updateCartUI();
+                        this.toggleCart(false);
+                    }
+                });
             },
 
             // --- PREMIUM CUSTOM DROPDOWN LOGIC ---
@@ -909,6 +967,7 @@
                                 <p>This website, DermDefine (<a href="https://www.dermdefine.com" target="_blank" class="text-rose-500 hover:underline">www.dermdefine.com</a>), is a brand wholly owned by Bloom Healthcare Group Sdn Bhd [202101014286 (1414586-X)] (“BHG”). All operations, products, and services provided through this website are fully managed and operated by BHG and its affiliates. All content on this website is the property of BHG and DermDefine.</p>
                                 <p>By accessing and using this website, users agree to be bound by the terms and conditions stated herein, without limitation or qualification. If you do not agree to these terms and conditions, please do not use this website or download any materials from it.</p>
                                 <p>Users may not copy, distribute, publish, or commercially exploit any content from this website, nor may they use the website for purposes not expressly permitted in these terms. The website must only be used for lawful purposes and in a manner that does not infringe the rights of, or restrict or inhibit the use of the website by, any third party. This includes (but is not limited to) unlawful conduct, harassment, causing distress or inconvenience, transmission of obscene, offensive, defamatory, or racially/ethnically objectionable material, or disrupting the normal flow of communication within the site.</p>
+                                <p><strong>Pricing and Order Tampering:</strong> All prices listed on our website and auto-populated during the checkout process are official and final. Customers are strictly prohibited from manually altering, modifying, or tampering with the auto-generated order details and prices when checking out via WhatsApp. BHG reserves the right to immediately reject, cancel, or refuse service for any order if it is found that the prices or product details have been manipulated. We cross-reference all incoming WhatsApp orders with our official system pricing and reserve the right to take appropriate action against individuals attempting to fraudulently alter transaction details.</p>
                                 <p>BHG reserves the right to change the format and content of the DermDefine website at any time, without prior notice. BHG may suspend, modify, or discontinue any part of the website, including the availability of any features or services, without notice or liability. Additionally, BHG may impose limits on certain features or restrict access to parts or all of the site as it deems necessary. The website may also be temporarily unavailable due to maintenance, updates, or other reasons determined by BHG.</p>
                             </div>
                         </section>
