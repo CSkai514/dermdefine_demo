@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DermDefine - Expert Medical Skincare</title>
+    <title>DermDefine</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -925,6 +925,30 @@
 
             // --- RENDERERS ---
 
+            renderFaqSection() {
+                const faqContainer = document.getElementById('faq-container');
+                if(!faqContainer) return;
+
+                faqContainer.innerHTML = faqs.map((f, i) => {
+                    const isActive = this.state.activeFaq === i;
+                    return `
+                    <div class="faq-item ${isActive ? 'active' : ''} cursor-pointer group" onclick="app.toggleFaq(${i})">
+                        <div class="faq-line h-[1px] w-full ${isActive ? 'bg-[#8A4A4A]' : 'bg-rose-200'} mb-4 transition-colors duration-300"></div>
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="font-serif text-[#8A4A4A] text-base md:text-lg leading-tight pr-4 ${isActive ? 'font-bold' : ''}">
+                                ${f.q}
+                            </h4>
+                            <span class="text-rose-400 text-xl font-light">${isActive ? '−' : '+'}</span>
+                        </div>
+                        <div class="overflow-hidden transition-all duration-300 ${isActive ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}">
+                            <p class="text-sm text-[#8A4A4A]/80 leading-relaxed pb-4">
+                                ${f.a}
+                            </p>
+                        </div>
+                    </div>
+                `}).join('');
+            },
+
             renderAbout() {
                 const container = document.getElementById('app-container');
                 container.innerHTML = `
@@ -1254,30 +1278,6 @@
                     // Match to label text logic (simplification)
                     filterLabel.innerText = this.state.filterCategory.charAt(0).toUpperCase() + this.state.filterCategory.slice(1) + ' Skin';
                 }
-            },
-
-            renderFaqSection() {
-                const faqContainer = document.getElementById('faq-container');
-                if(!faqContainer) return;
-
-                faqContainer.innerHTML = faqs.map((f, i) => {
-                    const isActive = this.state.activeFaq === i;
-                    return `
-                    <div class="faq-item ${isActive ? 'active' : ''} cursor-pointer group" onclick="app.toggleFaq(${i})">
-                        <div class="faq-line h-[1px] w-full ${isActive ? 'bg-[#8A4A4A]' : 'bg-rose-200'} mb-4 transition-colors duration-300"></div>
-                        <div class="flex justify-between items-start mb-4">
-                            <h4 class="font-serif text-[#8A4A4A] text-base md:text-lg leading-tight pr-4 ${isActive ? 'font-bold' : ''}">
-                                ${f.q}
-                            </h4>
-                            <span class="text-rose-400 text-xl font-light">${isActive ? '−' : '+'}</span>
-                        </div>
-                        <div class="overflow-hidden transition-all duration-300 ${isActive ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}">
-                            <p class="text-sm text-[#8A4A4A]/80 leading-relaxed pb-4">
-                                ${f.a}
-                            </p>
-                        </div>
-                    </div>
-                `}).join('');
             },
 
             renderProductDetail() {
