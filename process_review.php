@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($data->rating) && !empty($data->products) && !empty($data->title) && !empty($data->content)) {
         
-        $to = "chongshaokai1999@gmail.com"; 
+        $to = "marketing@dermdefine.com"; 
         $subject = "New Product Review: " . htmlspecialchars($data->title);
         
         $productsList = implode(", ", $data->products);
