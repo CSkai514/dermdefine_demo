@@ -834,9 +834,8 @@
                 
                 const titleInput = document.getElementById('review-title');
                 const contentInput = document.getElementById('review-content');
-                const honeypotInput = document.getElementById('review-website'); // Grab the honeypot
-                const submitButton = event.target.querySelector('button[type="submit"]');
-
+                const honeypotInput = document.getElementById('review-website');
+                
                 if(this.state.reviewRating === 0) {
                     Swal.fire({ title: 'Oops!', text: 'Please select a star rating.', icon: 'warning', confirmButtonColor: '#B86B6B' });
                     return;
@@ -852,33 +851,37 @@
                     title: titleInput.value,
                     content: contentInput.value,
                     date: new Date().toISOString(),
-                    bot_check: honeypotInput.value // Send honeypot to server
+                    bot_check: honeypotInput ? honeypotInput.value : '' 
                 };
 
-                const originalButtonText = submitButton.innerHTML;
-                submitButton.innerHTML = 'Sending...';
-                submitButton.disabled = true;
+                // Trigger SweetAlert Loading Popup
+                Swal.fire({
+                    title: 'Sending Review...',
+                    text: 'Please wait a moment.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
 
                 fetch('process_review.php', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(reviewData)
                 })
                 .then(async response => {
-                    // Read raw text first to prevent the JSON crash
                     const text = await response.text(); 
                     try {
                         const data = JSON.parse(text);
                         if (!response.ok) throw new Error(data.message || 'Server returned an error');
                         return data;
                     } catch (err) {
-                        console.error("CRITICAL PHP ERROR. Raw Response from Server:", text);
-                        throw new Error("Server returned an invalid response. Check browser console.");
+                        console.error("PHP Error:", text);
+                        throw new Error("Server error. Check browser console.");
                     }
                 })
                 .then(data => {
+                    // This automatically overwrites the loading popup
                     Swal.fire({ 
                         title: 'Thank You!', 
                         text: 'Your review has been successfully submitted.', 
@@ -892,20 +895,16 @@
                     this.updateReviewProductUI();
                     titleInput.value = '';
                     contentInput.value = '';
-                    honeypotInput.value = '';
+                    if(honeypotInput) honeypotInput.value = '';
                 })
                 .catch((error) => {
-                    console.error('Submission Error:', error);
+                    // This automatically overwrites the loading popup
                     Swal.fire({ 
                         title: 'Error', 
                         text: error.message || 'There was a problem sending your review.', 
                         icon: 'error', 
                         confirmButtonColor: '#B86B6B' 
                     });
-                })
-                .finally(() => {
-                    submitButton.innerHTML = originalButtonText;
-                    submitButton.disabled = false;
                 });
             },
 
