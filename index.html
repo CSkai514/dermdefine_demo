@@ -834,6 +834,7 @@
                 
                 const titleInput = document.getElementById('review-title');
                 const contentInput = document.getElementById('review-content');
+                const submitButton = event.target.querySelector('button[type="submit"]');
 
                 if(this.state.reviewRating === 0) {
                     Swal.fire({ title: 'Oops!', text: 'Please select a star rating.', icon: 'warning', confirmButtonColor: '#B86B6B' });
@@ -852,23 +853,50 @@
                     date: new Date().toISOString()
                 };
 
-                console.log("----- REVIEW DATA SUBMITTED -----");
-                console.log(JSON.stringify(reviewData, null, 2));
-                console.log("---------------------------------");
+                // Change button state to loading
+                const originalButtonText = submitButton.innerHTML;
+                submitButton.innerHTML = 'Sending...';
+                submitButton.disabled = true;
 
-                Swal.fire({ 
-                    title: 'Thank You!', 
-                    text: 'Your review data Not collected, Function coming soon.', 
-                    icon: 'info', 
-                    confirmButtonColor: '#B86B6B' 
+                // Send data to PHP script
+                fetch('process_review.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(reviewData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    Swal.fire({ 
+                        title: 'Thank You!', 
+                        text: 'Your review has been successfully submitted.', 
+                        icon: 'success', 
+                        confirmButtonColor: '#B86B6B' 
+                    });
+
+                    // Reset Form State
+                    this.state.reviewRating = 0;
+                    this.state.reviewProducts = [];
+                    this.updateStarUI(0);
+                    this.updateReviewProductUI();
+                    titleInput.value = '';
+                    contentInput.value = '';
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    Swal.fire({ 
+                        title: 'Error', 
+                        text: 'There was a problem sending your review. Please try again later.', 
+                        icon: 'error', 
+                        confirmButtonColor: '#B86B6B' 
+                    });
+                })
+                .finally(() => {
+                    // Restore button state
+                    submitButton.innerHTML = originalButtonText;
+                    submitButton.disabled = false;
                 });
-
-                this.state.reviewRating = 0;
-                this.state.reviewProducts = [];
-                this.updateStarUI(0);
-                this.updateReviewProductUI();
-                titleInput.value = '';
-                contentInput.value = '';
             },
 
             setProductImage(index) {
