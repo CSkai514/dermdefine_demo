@@ -834,6 +834,7 @@
                 
                 const titleInput = document.getElementById('review-title');
                 const contentInput = document.getElementById('review-content');
+                const honeypotInput = document.getElementById('review-website'); // Grab the honeypot
                 const submitButton = event.target.querySelector('button[type="submit"]');
 
                 if(this.state.reviewRating === 0) {
@@ -850,15 +851,14 @@
                     products: this.state.reviewProducts.map(id => products.find(p => p.id === id).name),
                     title: titleInput.value,
                     content: contentInput.value,
-                    date: new Date().toISOString()
+                    date: new Date().toISOString(),
+                    bot_check: honeypotInput.value // Send honeypot to server
                 };
 
-                // Change button state to loading
                 const originalButtonText = submitButton.innerHTML;
                 submitButton.innerHTML = 'Sending...';
                 submitButton.disabled = true;
 
-                // Send data to PHP script
                 fetch('process_review.php', {
                     method: 'POST',
                     headers: {
@@ -866,7 +866,18 @@
                     },
                     body: JSON.stringify(reviewData)
                 })
-                .then(response => response.json())
+                .then(async response => {
+                    // Read raw text first to prevent the JSON crash
+                    const text = await response.text(); 
+                    try {
+                        const data = JSON.parse(text);
+                        if (!response.ok) throw new Error(data.message || 'Server returned an error');
+                        return data;
+                    } catch (err) {
+                        console.error("CRITICAL PHP ERROR. Raw Response from Server:", text);
+                        throw new Error("Server returned an invalid response. Check browser console.");
+                    }
+                })
                 .then(data => {
                     Swal.fire({ 
                         title: 'Thank You!', 
@@ -875,25 +886,24 @@
                         confirmButtonColor: '#B86B6B' 
                     });
 
-                    // Reset Form State
                     this.state.reviewRating = 0;
                     this.state.reviewProducts = [];
                     this.updateStarUI(0);
                     this.updateReviewProductUI();
                     titleInput.value = '';
                     contentInput.value = '';
+                    honeypotInput.value = '';
                 })
                 .catch((error) => {
-                    console.error('Error:', error);
+                    console.error('Submission Error:', error);
                     Swal.fire({ 
                         title: 'Error', 
-                        text: 'There was a problem sending your review. Please try again later.', 
+                        text: error.message || 'There was a problem sending your review.', 
                         icon: 'error', 
                         confirmButtonColor: '#B86B6B' 
                     });
                 })
                 .finally(() => {
-                    // Restore button state
                     submitButton.innerHTML = originalButtonText;
                     submitButton.disabled = false;
                 });
@@ -1510,6 +1520,10 @@
                                 </div>
 
                                 <form class="space-y-6 w-full" onsubmit="app.submitReview(event)">
+                                    <div style="opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1;">
+                                        <label for="review-website">Do not fill this out if you are human:</label>
+                                        <input type="text" id="review-website" name="review-website" autocomplete="off" tabindex="-1">
+                                    </div>
                                     <div class="text-center">
                                         <label class="block text-sm md:text-base font-medium mb-2">Review Title</label>
                                         <input type="text" id="review-title" placeholder="Give your review a title" class="w-full bg-transparent border border-white/50 px-4 py-3 text-center text-white placeholder-white/50 focus:outline-none focus:border-white transition-colors" required>
